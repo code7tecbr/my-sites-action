@@ -1,0 +1,63 @@
+name: 'my-sites Deploy'
+description: 'Clona o template my-sites, injeta content/ e public/ e faz deploy no Cloudflare via Alchemy'
+
+inputs:
+  app_name:
+    description: 'Nome único do app no Cloudflare (ex: acme-site, banda-fulana)'
+    required: true
+  cf_api_token:
+    description: 'Cloudflare API Token com permissão de Workers e Pages'
+    required: true
+  cf_account_id:
+    description: 'Cloudflare Account ID'
+    required: true
+  template_token:
+    description: 'GitHub PAT (read-only) para clonar o repo privado code7tecbr/my-sites'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Clonar template my-sites
+      shell: bash
+      run: |
+        git clone \
+          https://x-access-token:${{ inputs.template_token }}@github.com/code7tecbr/my-sites.git \
+          $RUNNER_TEMP/my-sites-template
+
+    - name: Injetar content/ do cliente
+      shell: bash
+      run: |
+        rm -rf $RUNNER_TEMP/my-sites-template/content
+        cp -r $GITHUB_WORKSPACE/content $RUNNER_TEMP/my-sites-template/content
+
+    - name: Injetar public/ do cliente (se existir)
+      shell: bash
+      run: |
+        if [ -d "$GITHUB_WORKSPACE/public" ]; then
+          rm -rf $RUNNER_TEMP/my-sites-template/public
+          cp -r $GITHUB_WORKSPACE/public $RUNNER_TEMP/my-sites-template/public
+        fi
+
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v2
+
+    - name: Instalar dependências
+      shell: bash
+      working-directory: ${{ runner.temp }}/my-sites-template
+      run: bun install --frozen-lockfile
+
+    - name: Gerar tipos Nuxt
+      shell: bash
+      working-directory: ${{ runner.temp }}/my-sites-template
+      run: bun nuxt prepare
+
+    - name: Deploy via Alchemy
+      shell: bash
+      working-directory: ${{ runner.temp }}/my-sites-template
+      run: bun run deploy
+      env:
+        APP_NAME: ${{ inputs.app_name }}
+        CLOUDFLARE_API_TOKEN: ${{ inputs.cf_api_token }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ inputs.cf_account_id }}
+        ALCHEMY_STAGE: prod
