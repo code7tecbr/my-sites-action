@@ -49,6 +49,13 @@ runs:
           cp -r $GITHUB_WORKSPACE/public ${{ runner.temp }}/my-sites-template/public
         fi
 
+    - name: Restaurar state do Alchemy (.alchemy/)
+      shell: bash
+      run: |
+        if [ -d "$GITHUB_WORKSPACE/.alchemy" ]; then
+          cp -r $GITHUB_WORKSPACE/.alchemy ${{ runner.temp }}/my-sites-template/.alchemy
+        fi
+
     - name: Setup Bun
       uses: oven-sh/setup-bun@v2
       env:
@@ -75,3 +82,15 @@ runs:
         ALCHEMY_STAGE: ${{ inputs.stage }}
         CUSTOM_DOMAINS: ${{ inputs.custom_domains }}
         ALCHEMY_CI_STATE_STORE_CHECK: false
+
+    - name: Persistir state do Alchemy no repo de conteúdo
+      shell: bash
+      run: |
+        cd $GITHUB_WORKSPACE
+        cp -r ${{ runner.temp }}/my-sites-template/.alchemy .alchemy
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git remote set-url origin https://x-access-token:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
+        git add .alchemy
+        git diff --staged --quiet || git commit -m "chore: atualiza state do Alchemy [skip ci]"
+        git push
