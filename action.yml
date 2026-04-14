@@ -26,22 +26,22 @@ runs:
           -c credential.helper= \
           -c http.https://github.com/.extraheader= \
           clone https://github.com/code7tecbr/my-sites.git \
-          $RUNNER_TEMP/my-sites-template
+          ${{ runner.temp }}/my-sites-template
         # TODO: quando my-sites for privado, remover os -c e autenticar via template_token:
-        # git clone https://x-access-token:${{ inputs.template_token }}@github.com/code7tecbr/my-sites.git $RUNNER_TEMP/my-sites-template
+        # git clone https://x-access-token:${{ inputs.template_token }}@github.com/code7tecbr/my-sites.git ${{ runner.temp }}/my-sites-template
 
     - name: Injetar content/ do cliente
       shell: bash
       run: |
-        rm -rf $RUNNER_TEMP/my-sites-template/content
-        cp -r $GITHUB_WORKSPACE/content $RUNNER_TEMP/my-sites-template/content
+        rm -rf ${{ runner.temp }}/my-sites-template/content
+        cp -r $GITHUB_WORKSPACE/content ${{ runner.temp }}/my-sites-template/content
 
     - name: Injetar public/ do cliente (se existir)
       shell: bash
       run: |
         if [ -d "$GITHUB_WORKSPACE/public" ]; then
-          rm -rf $RUNNER_TEMP/my-sites-template/public
-          cp -r $GITHUB_WORKSPACE/public $RUNNER_TEMP/my-sites-template/public
+          rm -rf ${{ runner.temp }}/my-sites-template/public
+          cp -r $GITHUB_WORKSPACE/public ${{ runner.temp }}/my-sites-template/public
         fi
 
     - name: Setup Bun
