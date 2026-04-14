@@ -11,10 +11,9 @@ inputs:
   cf_account_id:
     description: 'Cloudflare Account ID'
     required: true
-  # template_token:
-  #   description: 'GitHub PAT (read-only) para clonar o repo privado code7tecbr/my-sites'
-  #   required: true
-  #   TODO: reativar quando my-sites se tornar privado
+  template_token:
+    description: 'GitHub PAT (read-only) para clonar o repo privado code7tecbr/my-sites'
+    required: true
 
 runs:
   using: 'composite'
@@ -25,10 +24,8 @@ runs:
         git \
           -c credential.helper= \
           -c http.https://github.com/.extraheader= \
-          clone https://github.com/code7tecbr/my-sites.git \
+          clone https://x-access-token:${{ inputs.template_token }}@github.com/code7tecbr/my-sites.git \
           ${{ runner.temp }}/my-sites-template
-        # TODO: quando my-sites for privado, remover os -c e autenticar via template_token:
-        # git clone https://x-access-token:${{ inputs.template_token }}@github.com/code7tecbr/my-sites.git ${{ runner.temp }}/my-sites-template
 
     - name: Injetar content/ do cliente
       shell: bash
