@@ -14,6 +14,14 @@ inputs:
   template_token:
     description: 'GitHub PAT (read-only) para clonar o repo privado code7tecbr/my-sites'
     required: true
+  stage:
+    description: 'Stage do Alchemy (ex: prod, staging). Afeta o nome do Worker no Cloudflare.'
+    required: false
+    default: 'prod'
+  custom_domains:
+    description: 'Domínios customizados separados por vírgula (ex: site.com.br,www.site.com.br)'
+    required: false
+    default: ''
 
 runs:
   using: 'composite'
@@ -64,5 +72,6 @@ runs:
         APP_NAME: ${{ inputs.app_name }}
         CLOUDFLARE_API_TOKEN: ${{ inputs.cf_api_token }}
         CLOUDFLARE_ACCOUNT_ID: ${{ inputs.cf_account_id }}
-        ALCHEMY_STAGE: prod
+        ALCHEMY_STAGE: ${{ inputs.stage }}
+        CUSTOM_DOMAINS: ${{ inputs.custom_domains }}
         ALCHEMY_CI_STATE_STORE_CHECK: false
