@@ -23,9 +23,10 @@ runs:
       shell: bash
       run: |
         git clone \
+          --config credential.helper= \
           https://github.com/code7tecbr/my-sites.git \
           $RUNNER_TEMP/my-sites-template
-        # TODO: quando my-sites for privado, autenticar via template_token:
+        # TODO: quando my-sites for privado, remover --config credential.helper= e autenticar via template_token:
         # https://x-access-token:${{ inputs.template_token }}@github.com/code7tecbr/my-sites.git
 
     - name: Injetar content/ do cliente
