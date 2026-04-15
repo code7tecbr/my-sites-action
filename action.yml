@@ -87,6 +87,7 @@ runs:
     - name: Persistir state do Alchemy no repo de conteúdo
       shell: bash
       run: |
+        find ${{ runner.temp }}/my-sites-template/.alchemy -name '*-build.json' -delete
         cd $GITHUB_WORKSPACE
         cp -r ${{ runner.temp }}/my-sites-template/.alchemy .alchemy
         git config user.name "github-actions[bot]"
