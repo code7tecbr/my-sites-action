@@ -82,6 +82,7 @@ runs:
         ALCHEMY_STAGE: ${{ inputs.stage }}
         CUSTOM_DOMAINS: ${{ inputs.custom_domains }}
         ALCHEMY_CI_STATE_STORE_CHECK: false
+        ALCHEMY_PASSWORD: ${{ inputs.template_token }}
 
     - name: Persistir state do Alchemy no repo de conteúdo
       shell: bash
