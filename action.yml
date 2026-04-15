@@ -22,6 +22,9 @@ inputs:
     description: 'Domínios customizados separados por vírgula (ex: site.com.br,www.site.com.br)'
     required: false
     default: ''
+  alchemy_password:
+    description: 'Senha para criptografia do state store do Alchemy (ALCHEMY_PASSWORD)'
+    required: true
 
 runs:
   using: 'composite'
@@ -82,7 +85,7 @@ runs:
         ALCHEMY_STAGE: ${{ inputs.stage }}
         CUSTOM_DOMAINS: ${{ inputs.custom_domains }}
         ALCHEMY_CI_STATE_STORE_CHECK: false
-        ALCHEMY_PASSWORD: ${{ inputs.template_token }}
+        ALCHEMY_PASSWORD: ${{ inputs.alchemy_password }}
 
     - name: Persistir state do Alchemy no repo de conteúdo
       shell: bash
