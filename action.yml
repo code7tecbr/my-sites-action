@@ -56,6 +56,7 @@ runs:
       shell: bash
       run: |
         if [ -d "$GITHUB_WORKSPACE/.alchemy" ]; then
+          rm -rf ${{ runner.temp }}/my-sites-template/.alchemy
           cp -r $GITHUB_WORKSPACE/.alchemy ${{ runner.temp }}/my-sites-template/.alchemy
         fi
 
