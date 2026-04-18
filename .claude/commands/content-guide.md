@@ -262,7 +262,7 @@ A imagem `ogImage` deve ter 1200×630px para melhor compatibilidade.
 | `detailPage` | não | Rota para página de detalhe. Omitir = sem link |
 | `cta` | não | Botão de ação extra no card |
 
-Para adicionar um serviço: adicione um objeto ao array `items`. Para remover: delete o objeto.
+Para adicionar um serviço: adicione um objeto ao array `items`. Para remover: delete o objeto. O grid se adapta automaticamente a qualquer número de itens.
 
 ### Missão (`content/sections/mission.json`)
 
@@ -316,6 +316,42 @@ Ideal para valores, diferenciais ou pilares da empresa.
 - Campos vazios (`""`) são omitidos da renderização
 - `whatsapp` deve conter apenas números (DDI + DDD + número), sem espaços ou símbolos
 - `instagram` e `facebook` aceitam apenas o username (sem `@` ou URL completa)
+
+### Rodapé (`content/sections/footer.json`)
+
+```json
+{
+  "colors": {
+    "background": "#111111",
+    "foreground": "#ffffff",
+    "muted": "#9ca3af"
+  },
+  "slogan": "Sua empresa com excelência e inovação.",
+  "address": "Rua Exemplo, 123 — Cidade, Estado",
+  "phones": ["(11) 9 0000-0000"],
+  "email": "contato@empresa.com",
+  "quickLinks": [
+    { "label": "Início",   "href": "#hero" },
+    { "label": "Serviços", "href": "#services" },
+    { "label": "Sobre",    "href": "#about" },
+    { "label": "Missão",   "href": "#mission" },
+    { "label": "Contato",  "href": "#contact" }
+  ],
+  "copyright": "© 2025 Empresa. Todos os direitos reservados."
+}
+```
+
+| Campo | Descrição |
+|---|---|
+| `slogan` | Texto exibido abaixo do logo no rodapé |
+| `address` | Endereço físico |
+| `phones` | Array de telefones (pode ter mais de um) |
+| `email` | E-mail de contato |
+| `quickLinks` | Links rápidos da coluna de navegação |
+| `copyright` | Texto de direitos autorais no rodapé inferior |
+
+- `colors.muted` controla a cor dos textos secundários (endereço, e-mail, etc.)
+- Para múltiplos telefones: `"phones": ["(11) 9 0000-0000", "(11) 9 1111-1111"]`
 
 ---
 
@@ -438,6 +474,8 @@ Posicione o objeto na posição desejada dentro do array.
 | 2025-04 | Páginas de detalhe | `/item/[slug].vue` gerado a partir de `content/details/items/*.json` |
 | 2026-04 | Versionamento do guia | Campo `version` no frontmatter + link para o repo público oficial |
 | 2026-04 | `colors` nas páginas de detalhe | Campo `colors` suportado em `content/details/items/*.json` |
+| 2026-04 | FooterSection | Seção de rodapé com 4 colunas + copyright config-driven via `content/sections/footer.json` |
+| 2026-04 | Grid adaptativo em serviços | `auto-fit` no grid — se adapta a 1, 2 ou N itens sem espaço vazio |
 
 > Ao implementar uma nova feature, adicione uma linha nesta tabela com a data e descrição resumida.
 
