@@ -10,21 +10,22 @@ Se o usuário não especificou nada acima, pergunte o que ele quer fazer hoje: e
 
 ### Como funciona
 
-Todo conteúdo editável fica em `content/`. Os JSONs são lidos automaticamente pelo site ao fazer deploy — basta editar e commitar. O código Nuxt/Vue fica em outro repositório privado e **não deve ser tocado**.
+Todo conteúdo editável fica em `content/`. Os arquivos JSON são importados **exclusivamente** por `app.config.ts`, que os expõe via `useAppConfig()`. Componentes nunca importam JSONs diretamente.
 
 ```
 content/
 ├── brand.json          ← identidade visual e cores globais
 ├── nav.json            ← links do menu de navegação
-├── seo.json            ← título, descrição, og:image
+├── seo.json            ← metadados de SEO e compartilhamento
 ├── layout.json         ← quais seções estão ativas e em qual ordem
 └── sections/
-│   ├── hero.json       ← banner principal
-│   ├── about.json      ← sobre a empresa
-│   ├── services.json   ← cards de serviços
-│   ├── mission.json    ← missão / valores
-│   ├── gallery.json    ← portfólio / galeria
-│   └── contact.json    ← e-mail, telefone, redes sociais
+│   ├── hero.json
+│   ├── about.json
+│   ├── services.json
+│   ├── mission.json
+│   ├── gallery.json
+│   ├── contact.json
+│   └── footer.json
 └── details/
     └── items/          ← uma página de detalhe por arquivo (slug = nome do arquivo)
         └── servico-1.json
@@ -51,15 +52,14 @@ O campo `enabled` controla se uma seção aparece na página. A **ordem do array
     { "id": "about",    "component": "AboutSection",     "enabled": true  },
     { "id": "mission",  "component": "MissionSection",   "enabled": true  },
     { "id": "gallery",  "component": "GallerySection",   "enabled": true  },
-    { "id": "contact",  "component": "ContactSection",   "enabled": true  },
-    { "id": "footer",   "component": "FooterSection",    "enabled": true  }
+    { "id": "contact",  "component": "ContactSection",   "enabled": true  }
   ]
 }
 ```
 
-- `"enabled": false` → seção desaparece do site sem precisar deletar nada
+- `"enabled": false` → seção some da página sem precisar deletar nada
 - Para reordenar seções, basta mover o objeto no array
-- Nunca altere `"component"` — apenas `"enabled"` e a ordem
+- O campo `component` deve corresponder exatamente ao nome do componente registrado em `pages/index.vue`
 
 ---
 
@@ -87,11 +87,11 @@ O campo `enabled` controla se uma seção aparece na página. A **ordem do array
 }
 ```
 
-As cores são aplicadas como variáveis CSS em tempo de execução — troca de cores **sem rebuild**.
+**Como funciona internamente:** `app.vue` injeta essas cores como CSS variables no `:root` em tempo de execução. O Tailwind usa `@theme inline` para mapear as vars como utilitários (`text-brand`, `bg-accent`, etc.). Resultado: troca de cores **sem rebuild**.
 
 ### Override de cores por seção
 
-Cada `content/sections/*.json` tem um campo `colors: {}` que permite sobrescrever as cores globais apenas naquela seção. Útil para seções com fundo escuro em um site claro.
+Cada `content/sections/*.json` tem um campo `colors: {}` que permite sobrescrever as cores globais apenas naquela seção. Útil para seções com fundo escuro em um site claro, por exemplo.
 
 ```json
 {
@@ -102,6 +102,8 @@ Cada `content/sections/*.json` tem um campo `colors: {}` que permite sobrescreve
   "title": "Sobre Nós"
 }
 ```
+
+> As chaves disponíveis em `colors` dependem do que cada componente consome. Consulte o componente correspondente em `components/sections/` para ver quais variáveis ele respeita.
 
 ### Nav com cores próprias — `content/nav.json`
 
@@ -131,10 +133,7 @@ O nav também tem campo `colors: {}` para override independente:
   "fontFamily": "'Montserrat', sans-serif",
   "primaryColor": "#7c3aed",
   "accentColor": "#ea580c",
-  "foregroundColor": "#ffffff",
-  "backgroundColor": "#ffffff",
-  "secondaryBackground": "#f5f5f7",
-  "mutedColor": "#6b7280"
+  "foregroundColor": "#ffffff"
 }
 ```
 
@@ -142,10 +141,12 @@ O nav também tem campo `colors: {}` para override independente:
 |---|---|
 | `name` | Nome exibido quando não há logo |
 | `tagline` | Slogan (usado em alguns temas) |
-| `logo` | Caminho do arquivo em `public/` ou URL externa. String vazia = exibe `name` |
+| `logo` | Caminho do arquivo ou URL externa. String vazia = exibe `name` |
 | `logoHeight` | Altura da logo em pixels |
 | `favicon` | Ícone da aba do browser |
-| `fontFamily` | Fonte principal. String vazia = usa a padrão |
+| `fontFamily` | Fonte principal. String vazia = usa Inter (padrão) |
+
+> Para usar uma fonte do Google Fonts, inclua o `@import` no campo `fontFamily` **ou** adicione a tag `<link>` manualmente em `app.vue`.
 
 ---
 
@@ -154,7 +155,7 @@ O nav também tem campo `colors: {}` para override independente:
 ```json
 {
   "title": "Nome da Empresa",
-  "description": "Descrição clara do site para Google (até 160 caracteres).",
+  "description": "Descrição objetiva para mecanismos de busca (até ~160 caracteres).",
   "ogImage": "/og-image.jpg",
   "twitterCard": "summary_large_image"
 }
@@ -187,16 +188,18 @@ A imagem `ogImage` deve ter 1200×630px para melhor compatibilidade.
 }
 ```
 
-- `href` com `#id` → ancora na seção da página (scroll suave)
+- `href` com `#id` → ancora na seção da página (scroll suave via CSS)
 - `href` com `/caminho` → navega para outra página
 - Para remover um link do menu, delete o objeto — não precisa mexer no `layout.json`
 - A ordem dos objetos define a ordem dos links no menu
 
 ---
 
-## Seções — o que editar em cada uma
+## Seções — Referência de campos
 
-### Hero (`content/sections/hero.json`)
+### Hero — `content/sections/hero.json`
+
+Primeira seção da página, com chamada principal e CTA.
 
 ```json
 {
@@ -219,19 +222,30 @@ A imagem `ogImage` deve ter 1200×630px para melhor compatibilidade.
 | `cta.href` | Destino do botão (âncora, rota ou URL externa) |
 | `backgroundImage` | Imagem de fundo. String vazia = fundo com cor `backgroundColor` |
 
-### Sobre (`content/sections/about.json`)
+---
+
+### Sobre — `content/sections/about.json`
 
 ```json
 {
   "colors": {},
   "title": "Sobre Nós",
-  "body": "Conte aqui a história da empresa. Use \\n para quebrar linhas.",
+  "body": "Conte aqui a história da empresa...",
   "image": "/about.jpg",
   "imageAlt": "Foto da equipe"
 }
 ```
 
-### Serviços (`content/sections/services.json`)
+| Campo | Descrição |
+|---|---|
+| `title` | Título da seção |
+| `body` | Texto longo. Suporta `\n` para quebras de linha |
+| `image` | Foto ilustrativa ao lado do texto |
+| `imageAlt` | Texto alternativo da imagem (acessibilidade e SEO) |
+
+---
+
+### Serviços — `content/sections/services.json`
 
 ```json
 {
@@ -263,9 +277,11 @@ A imagem `ogImage` deve ter 1200×630px para melhor compatibilidade.
 | `detailPage` | não | Rota para página de detalhe. Omitir = sem link |
 | `cta` | não | Botão de ação extra no card |
 
-Para adicionar um serviço: adicione um objeto ao array `items`. Para remover: delete o objeto. O grid se adapta automaticamente a qualquer número de itens.
+Para adicionar um serviço, adicione um objeto ao array `items`. Para remover, delete o objeto.
 
-### Missão (`content/sections/mission.json`)
+---
+
+### Missão — `content/sections/mission.json`
 
 ```json
 {
@@ -279,9 +295,11 @@ Para adicionar um serviço: adicione um objeto ao array `items`. Para remover: d
 }
 ```
 
-Ideal para valores, diferenciais ou pilares da empresa.
+Estrutura idêntica à de serviços, mas sem `detailPage` ou `cta`. Ideal para valores, diferenciais ou pilares da empresa.
 
-### Galeria (`content/sections/gallery.json`)
+---
+
+### Galeria — `content/sections/gallery.json`
 
 ```json
 {
@@ -295,9 +313,11 @@ Ideal para valores, diferenciais ou pilares da empresa.
 
 - Imagens em `public/` são referenciadas com `/caminho/arquivo.jpg`
 - O `alt` é obrigatório para acessibilidade e SEO
-- A galeria abre lightbox ao clicar. Recomendamos até 12 fotos para melhor performance
+- A galeria abre lightbox ao clicar. Sem limite de itens, mas recomendamos até 12 para performance
 
-### Contato (`content/sections/contact.json`)
+---
+
+### Contato — `content/sections/contact.json`
 
 ```json
 {
@@ -307,21 +327,26 @@ Ideal para valores, diferenciais ou pilares da empresa.
   "phone": "(11) 9 0000-0000",
   "address": "Rua Exemplo, 123 — Cidade, Estado",
   "social": {
-    "instagram": "usuario_sem_arroba",
-    "facebook": "usuario_ou_url",
-    "whatsapp": "11900000000"
+    "instagram": "meu_perfil",
+    "facebook": "meu_perfil",
+    "whatsapp": "5511900000000"
   }
 }
 ```
 
 - Campos vazios (`""`) são omitidos da renderização
-- `whatsapp` deve conter apenas números (DDI + DDD + número), sem espaços ou símbolos
-- `instagram` e `facebook` aceitam apenas o username (sem `@` ou URL completa)
+- `instagram` e `facebook` → apenas o **username**, sem `@`, sem `https://`, sem URL completa (ex: `"meu_perfil"`, não `"instagram.com/meu_perfil"`)
+- `whatsapp` → apenas números: DDI + DDD + número, sem espaços ou símbolos (ex: `"5511900000000"`)
 
-### Rodapé (`content/sections/footer.json`)
+---
+
+### Footer — `content/sections/footer.json`
+
+O footer é renderizado **automaticamente** no layout — não precisa estar em `layout.json`. Para desativar, use `"enabled": false`.
 
 ```json
 {
+  "enabled": true,
   "colors": {
     "background": "#111111",
     "foreground": "#ffffff",
@@ -331,12 +356,14 @@ Ideal para valores, diferenciais ou pilares da empresa.
   "address": "Rua Exemplo, 123 — Cidade, Estado",
   "phones": ["(11) 9 0000-0000"],
   "email": "contato@empresa.com",
+  "social": {
+    "instagram": "meu_perfil",
+    "facebook": "meu_perfil",
+    "whatsapp": "5511900000000"
+  },
   "quickLinks": [
     { "label": "Início",   "href": "#hero" },
-    { "label": "Serviços", "href": "#services" },
-    { "label": "Sobre",    "href": "#about" },
-    { "label": "Missão",   "href": "#mission" },
-    { "label": "Contato",  "href": "#contact" }
+    { "label": "Serviços", "href": "#services" }
   ],
   "copyright": "© 2025 Empresa. Todos os direitos reservados."
 }
@@ -344,32 +371,32 @@ Ideal para valores, diferenciais ou pilares da empresa.
 
 | Campo | Descrição |
 |---|---|
-| `slogan` | Texto exibido abaixo do logo no rodapé |
-| `address` | Endereço físico |
-| `phones` | Array de telefones (pode ter mais de um) |
-| `email` | E-mail de contato |
-| `quickLinks` | Links rápidos da coluna de navegação |
-| `copyright` | Texto de direitos autorais no rodapé inferior |
-
-- `colors.muted` controla a cor dos textos secundários (endereço, e-mail, etc.)
-- Para múltiplos telefones: `"phones": ["(11) 9 0000-0000", "(11) 9 1111-1111"]`
+| `enabled` | `false` desativa o footer. Padrão: `true` |
+| `slogan` | Texto exibido abaixo do nome da empresa na 1ª coluna |
+| `phones` | Array de telefones (aceita mais de um) |
+| `social.instagram` | Apenas o username, sem `@` ou URL |
+| `social.facebook` | Apenas o username, sem `@` ou URL |
+| `social.whatsapp` | Apenas números: DDI + DDD + número (ex: `"5511900000000"`) |
+| `quickLinks` | Links da 4ª coluna. Mesma estrutura do `nav.json` |
+| `copyright` | Texto da barra inferior à esquerda |
 
 ---
 
-## Páginas de detalhe (`content/details/items/`)
+## Páginas de Detalhe — `content/details/items/`
 
-Cada arquivo JSON cria uma página. O nome do arquivo vira a URL.
+Cada arquivo JSON cria uma página em `/item/[slug]`, onde o slug é o **nome do arquivo sem `.json`**.
 
-Exemplo: `servico-consultoria.json` → `/item/servico-consultoria`
+Exemplo: `content/details/items/servico-consultoria.json` → `/item/servico-consultoria`
 
 ```json
 {
   "colors": {},
-  "title": "Nome do Serviço",
-  "description": "Descrição curta (aparece também no card de serviços).",
+  "title": "Serviço 1",
+  "description": "Descrição curta exibida no card da seção de serviços.",
   "badge": "R$ 00,00",
   "images": [
-    { "src": "/fotos/servico-1.jpg", "alt": "Serviço 1 — imagem 1" }
+    { "src": "/fotos/servico-1a.jpg", "alt": "Serviço 1 — imagem 1" },
+    { "src": "/fotos/servico-1b.jpg", "alt": "Serviço 1 — imagem 2" }
   ],
   "body": "Texto longo descrevendo o serviço em detalhes.",
   "features": [
@@ -385,7 +412,7 @@ Exemplo: `servico-consultoria.json` → `/item/servico-consultoria`
 
 | Campo | Descrição |
 |---|---|
-| `colors` | Override de cores da página (mesmas chaves das seções: `background`, `foreground`, etc.) |
+| `colors` | Override de cores para a página (mesmas chaves das seções: `background`, `foreground`, etc.) |
 | `title` | Nome do item (H1 da página de detalhe) |
 | `description` | Texto curto (aparece também no card em `services.json`) |
 | `badge` | Etiqueta destacada (preço, categoria, status) |
@@ -394,8 +421,8 @@ Exemplo: `servico-consultoria.json` → `/item/servico-consultoria`
 | `features` | Lista de características ou diferenciais |
 | `cta` | Botão de chamada para ação no final da página |
 
-Para **criar**: crie o arquivo JSON com o slug desejado.
-Para **remover**: delete o arquivo. Verifique se nenhum `services.json` aponta para o slug removido via `detailPage`.
+Para **criar** uma nova página de detalhe: crie o arquivo JSON com o slug desejado.
+Para **remover**: delete o arquivo. Garanta que nenhum `services.json` aponte para o slug removido via `detailPage`.
 
 ---
 
@@ -477,6 +504,8 @@ Posicione o objeto na posição desejada dentro do array.
 | 2026-04 | `colors` nas páginas de detalhe | Campo `colors` suportado em `content/details/items/*.json` |
 | 2026-04 | FooterSection | Seção de rodapé com 4 colunas + copyright config-driven via `content/sections/footer.json` |
 | 2026-04 | Grid adaptativo em serviços | `auto-fit` no grid — se adapta a 1, 2 ou N itens sem espaço vazio |
+| 2026-04 | Footer no layout com `enabled` | Footer renderizado no layout por padrão; desativar com `"enabled": false` em `footer.json` |
+| 2026-04 | `social` no footer | Campos `instagram`, `facebook`, `whatsapp` disponíveis em `footer.json` |
 
 > Ao implementar uma nova feature, adicione uma linha nesta tabela com a data e descrição resumida.
 
