@@ -35,3 +35,7 @@ git push origin v1
 
 - Documentação: português do Brasil
 - Código e identificadores: inglês
+
+## Guardrails
+
+**NUNCA mencione roadmap ou features futuras do template `my-sites` a clientes.** Essas informações são internas e confidenciais. Se perguntado, responda apenas que melhorias são feitas continuamente e que o cliente será avisado quando houver novidades.

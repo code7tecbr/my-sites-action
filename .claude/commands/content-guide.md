@@ -10,7 +10,7 @@ Se o usuário não especificou nada acima, pergunte o que ele quer fazer hoje: e
 
 ### Como funciona
 
-Todo o conteúdo editável fica em `content/`. Os JSONs são lidos automaticamente pelo site ao fazer deploy — basta editar e commitar. O código Nuxt/Vue fica em outro repositório privado e **não deve ser tocado**.
+Todo conteúdo editável fica em `content/`. Os JSONs são lidos automaticamente pelo site ao fazer deploy — basta editar e commitar. O código Nuxt/Vue fica em outro repositório privado e **não deve ser tocado**.
 
 ```
 content/
@@ -19,12 +19,20 @@ content/
 ├── seo.json            ← título, descrição, og:image
 ├── layout.json         ← quais seções estão ativas e em qual ordem
 └── sections/
-    ├── hero.json       ← banner principal
-    ├── about.json      ← sobre a empresa
-    ├── services.json   ← cards de serviços
-    ├── mission.json    ← missão / valores
-    ├── gallery.json    ← portfólio / galeria
-    └── contact.json    ← e-mail, telefone, redes sociais
+│   ├── hero.json       ← banner principal
+│   ├── about.json      ← sobre a empresa
+│   ├── services.json   ← cards de serviços
+│   ├── mission.json    ← missão / valores
+│   ├── gallery.json    ← portfólio / galeria
+│   └── contact.json    ← e-mail, telefone, redes sociais
+└── details/
+    └── items/          ← uma página de detalhe por arquivo (slug = nome do arquivo)
+        └── servico-1.json
+```
+
+**Fluxo de dados:**
+```
+content/*.json  →  app.config.ts  →  useAppConfig()  →  componentes Vue
 ```
 
 ---
@@ -33,12 +41,14 @@ content/
 
 Arquivo: `content/layout.json`
 
+O campo `enabled` controla se uma seção aparece na página. A **ordem do array** define a **ordem de renderização**.
+
 ```json
 {
   "sections": [
     { "id": "hero",     "component": "HeroSection",     "enabled": true  },
     { "id": "services", "component": "ServicesSection",  "enabled": true  },
-    { "id": "about",    "component": "AboutSection",     "enabled": false },
+    { "id": "about",    "component": "AboutSection",     "enabled": true  },
     { "id": "mission",  "component": "MissionSection",   "enabled": true  },
     { "id": "gallery",  "component": "GallerySection",   "enabled": true  },
     { "id": "contact",  "component": "ContactSection",   "enabled": true  }
@@ -46,32 +56,78 @@ Arquivo: `content/layout.json`
 }
 ```
 
-- `"enabled": false` → seção desaparece do site
-- A ordem dos objetos define a ordem de aparição na página
+- `"enabled": false` → seção desaparece do site sem precisar deletar nada
+- Para reordenar seções, basta mover o objeto no array
 - Nunca altere `"component"` — apenas `"enabled"` e a ordem
 
 ---
 
-## Cores — `content/brand.json`
+## Cores e Theming
 
-| Campo | O que controla | Exemplo |
-|---|---|---|
-| `primaryColor` | Botões, links, destaques | `"#7c3aed"` |
-| `accentColor` | Elementos secundários | `"#ea580c"` |
-| `foregroundColor` | Cor do texto principal | `"#ffffff"` |
-| `backgroundColor` | Fundo geral do site | `"#0f0f0f"` |
-| `secondaryBackground` | Fundo de seções alternadas | `"#1a1a2e"` |
-| `mutedColor` | Textos secundários, legendas | `"#9ca3af"` |
+### Cores globais — `content/brand.json`
 
-Exemplo completo:
+| Campo | CSS Variable | Uso | Padrão |
+|---|---|---|---|
+| `primaryColor` | `--brand-primary` | botões, links, destaques | `#7c3aed` |
+| `accentColor` | `--brand-accent` | elementos secundários de destaque | `#ea580c` |
+| `foregroundColor` | `--brand-foreground` | texto principal | `#ffffff` |
+| `backgroundColor` | `--brand-background` | fundo geral do site | `#ffffff` |
+| `secondaryBackground` | `--brand-bg-secondary` | fundo de seções alternadas | `#f5f5f7` |
+| `mutedColor` | `--brand-muted` | textos secundários, legendas | `#6b7280` |
+
 ```json
 {
-  "name": "Minha Empresa",
-  "tagline": "Seu slogan aqui",
+  "primaryColor": "#7c3aed",
+  "accentColor": "#ea580c",
+  "foregroundColor": "#ffffff",
+  "backgroundColor": "#0f0f0f",
+  "secondaryBackground": "#1a1a2e",
+  "mutedColor": "#9ca3af"
+}
+```
+
+As cores são aplicadas como variáveis CSS em tempo de execução — troca de cores **sem rebuild**.
+
+### Override de cores por seção
+
+Cada `content/sections/*.json` tem um campo `colors: {}` que permite sobrescrever as cores globais apenas naquela seção. Útil para seções com fundo escuro em um site claro.
+
+```json
+{
+  "colors": {
+    "background": "#1a1a2e",
+    "foreground": "#ffffff"
+  },
+  "title": "Sobre Nós"
+}
+```
+
+### Nav com cores próprias — `content/nav.json`
+
+O nav também tem campo `colors: {}` para override independente:
+
+```json
+{
+  "colors": {
+    "background": "#000000",
+    "foreground": "#ffffff"
+  },
+  "links": [...]
+}
+```
+
+---
+
+## Identidade da Marca — `content/brand.json`
+
+```json
+{
+  "name": "Nome da Empresa",
+  "tagline": "O slogan da sua empresa aqui",
   "logo": "/logo.svg",
   "logoHeight": 40,
   "favicon": "/favicon.ico",
-  "fontFamily": "",
+  "fontFamily": "'Montserrat', sans-serif",
   "primaryColor": "#7c3aed",
   "accentColor": "#ea580c",
   "foregroundColor": "#ffffff",
@@ -81,8 +137,14 @@ Exemplo completo:
 }
 ```
 
-- `logo`: caminho do arquivo em `public/` (ex: `/logo.png`) ou deixe vazio para exibir o `name`
-- `fontFamily`: nome da fonte (ex: `"'Montserrat', sans-serif"`) ou vazio para usar a padrão
+| Campo | Descrição |
+|---|---|
+| `name` | Nome exibido quando não há logo |
+| `tagline` | Slogan (usado em alguns temas) |
+| `logo` | Caminho do arquivo em `public/` ou URL externa. String vazia = exibe `name` |
+| `logoHeight` | Altura da logo em pixels |
+| `favicon` | Ícone da aba do browser |
+| `fontFamily` | Fonte principal. String vazia = usa a padrão |
 
 ---
 
@@ -97,7 +159,14 @@ Exemplo completo:
 }
 ```
 
-- `ogImage` deve ter 1200×630px — é a imagem que aparece ao compartilhar no WhatsApp/redes
+| Campo | Onde aparece |
+|---|---|
+| `title` | Aba do browser, Google, compartilhamentos |
+| `description` | Snippet do Google, preview do WhatsApp/Telegram |
+| `ogImage` | Imagem ao compartilhar no WhatsApp, Facebook, LinkedIn |
+| `twitterCard` | Tipo de card no Twitter: `summary` ou `summary_large_image` |
+
+A imagem `ogImage` deve ter 1200×630px para melhor compatibilidade.
 
 ---
 
@@ -109,41 +178,60 @@ Exemplo completo:
   "links": [
     { "label": "Início",   "href": "#hero" },
     { "label": "Serviços", "href": "#services" },
+    { "label": "Sobre",    "href": "#about" },
+    { "label": "Missão",   "href": "#mission" },
+    { "label": "Galeria",  "href": "#gallery" },
     { "label": "Contato",  "href": "#contact" }
   ]
 }
 ```
 
-- Para remover um item do menu: apague o objeto
-- `href` com `#` navega para a seção na mesma página
+- `href` com `#id` → ancora na seção da página (scroll suave)
+- `href` com `/caminho` → navega para outra página
+- Para remover um link do menu, delete o objeto — não precisa mexer no `layout.json`
+- A ordem dos objetos define a ordem dos links no menu
 
 ---
 
 ## Seções — o que editar em cada uma
 
 ### Hero (`content/sections/hero.json`)
+
 ```json
 {
   "colors": {},
-  "headline": "Título principal da página",
-  "subheadline": "Texto de apoio abaixo do título.",
-  "cta": { "label": "Saiba mais", "href": "#about" },
+  "headline": "Bem-vindo à Nossa Empresa",
+  "subheadline": "Fazemos coisas incríveis. Venha conhecer o nosso trabalho.",
+  "cta": {
+    "label": "Saiba mais",
+    "href": "#about"
+  },
   "backgroundImage": "/hero-bg.jpg"
 }
 ```
 
+| Campo | Descrição |
+|---|---|
+| `headline` | Título principal (H1) |
+| `subheadline` | Texto de apoio abaixo do título |
+| `cta.label` | Texto do botão de chamada para ação |
+| `cta.href` | Destino do botão (âncora, rota ou URL externa) |
+| `backgroundImage` | Imagem de fundo. String vazia = fundo com cor `backgroundColor` |
+
 ### Sobre (`content/sections/about.json`)
+
 ```json
 {
   "colors": {},
   "title": "Sobre Nós",
-  "body": "Texto longo sobre a empresa. Use \\n para quebrar linhas.",
+  "body": "Conte aqui a história da empresa. Use \\n para quebrar linhas.",
   "image": "/about.jpg",
   "imageAlt": "Foto da equipe"
 }
 ```
 
 ### Serviços (`content/sections/services.json`)
+
 ```json
 {
   "colors": {},
@@ -153,38 +241,63 @@ Exemplo completo:
     {
       "icon": "🏗️",
       "title": "Serviço 1",
-      "description": "Descrição curta do serviço.",
-      "detailPage": "/item/servico-1"
+      "description": "Descreva o que este serviço oferece.",
+      "detailPage": "/item/servico-1",
+      "cta": { "label": "Saiba mais", "href": "#" }
+    },
+    {
+      "icon": "⚡",
+      "title": "Serviço 2",
+      "description": "Descreva o que este serviço oferece."
     }
   ]
 }
 ```
-- `detailPage` é opcional. Omita se não houver página de detalhe
-- Para adicionar serviço: adicione um objeto ao array `items`
+
+| Campo | Obrigatório | Descrição |
+|---|---|---|
+| `icon` | sim | Emoji ou texto curto exibido no card |
+| `title` | sim | Nome do serviço |
+| `description` | sim | Texto curto do card |
+| `detailPage` | não | Rota para página de detalhe. Omitir = sem link |
+| `cta` | não | Botão de ação extra no card |
+
+Para adicionar um serviço: adicione um objeto ao array `items`. Para remover: delete o objeto.
 
 ### Missão (`content/sections/mission.json`)
+
 ```json
 {
   "colors": {},
   "title": "Nossa Missão",
   "items": [
-    { "icon": "⭐", "title": "Excelência", "description": "Texto do valor." }
+    { "icon": "⭐", "title": "Excelência",   "description": "Entregamos o melhor em cada projeto." },
+    { "icon": "⏰", "title": "Pontualidade", "description": "Cumprimos prazos." },
+    { "icon": "❤️", "title": "Humanismo",    "description": "Pessoas no centro de tudo." }
   ]
 }
 ```
 
+Ideal para valores, diferenciais ou pilares da empresa.
+
 ### Galeria (`content/sections/gallery.json`)
+
 ```json
 {
   "title": "Galeria",
   "items": [
-    { "src": "/fotos/foto-1.jpg", "alt": "Descrição da foto" }
+    { "src": "/fotos/foto-1.jpg", "alt": "Descrição da foto 1" },
+    { "src": "/fotos/foto-2.jpg", "alt": "Descrição da foto 2" }
   ]
 }
 ```
-- Imagens ficam em `public/` e são referenciadas como `/nome-do-arquivo.jpg`
+
+- Imagens em `public/` são referenciadas com `/caminho/arquivo.jpg`
+- O `alt` é obrigatório para acessibilidade e SEO
+- A galeria abre lightbox ao clicar. Recomendamos até 12 fotos para melhor performance
 
 ### Contato (`content/sections/contact.json`)
+
 ```json
 {
   "colors": {},
@@ -194,13 +307,15 @@ Exemplo completo:
   "address": "Rua Exemplo, 123 — Cidade, Estado",
   "social": {
     "instagram": "usuario_sem_arroba",
-    "facebook": "usuario",
+    "facebook": "usuario_ou_url",
     "whatsapp": "11900000000"
   }
 }
 ```
+
 - Campos vazios (`""`) são omitidos da renderização
-- `whatsapp`: só números — DDI+DDD+número, sem espaços
+- `whatsapp` deve conter apenas números (DDI + DDD + número), sem espaços ou símbolos
+- `instagram` e `facebook` aceitam apenas o username (sem `@` ou URL completa)
 
 ---
 
@@ -212,17 +327,119 @@ Exemplo: `servico-consultoria.json` → `/item/servico-consultoria`
 
 ```json
 {
+  "colors": {},
   "title": "Nome do Serviço",
-  "description": "Descrição curta (aparece no card).",
+  "description": "Descrição curta (aparece também no card de serviços).",
   "badge": "R$ 00,00",
   "images": [
-    { "src": "/fotos/servico-1.jpg", "alt": "Descrição" }
+    { "src": "/fotos/servico-1.jpg", "alt": "Serviço 1 — imagem 1" }
   ],
-  "body": "Texto longo e detalhado.",
-  "features": ["Destaque 1", "Destaque 2"],
-  "cta": { "label": "Entrar em contato", "href": "#contact" }
+  "body": "Texto longo descrevendo o serviço em detalhes.",
+  "features": [
+    "Característica ou destaque 1",
+    "Característica ou destaque 2"
+  ],
+  "cta": {
+    "label": "Entrar em contato",
+    "href": "#contact"
+  }
 }
 ```
+
+| Campo | Descrição |
+|---|---|
+| `colors` | Override de cores da página (mesmas chaves das seções: `background`, `foreground`, etc.) |
+| `title` | Nome do item (H1 da página de detalhe) |
+| `description` | Texto curto (aparece também no card em `services.json`) |
+| `badge` | Etiqueta destacada (preço, categoria, status) |
+| `images` | Galeria de imagens da página de detalhe |
+| `body` | Texto longo com descrição completa |
+| `features` | Lista de características ou diferenciais |
+| `cta` | Botão de chamada para ação no final da página |
+
+Para **criar**: crie o arquivo JSON com o slug desejado.
+Para **remover**: delete o arquivo. Verifique se nenhum `services.json` aponta para o slug removido via `detailPage`.
+
+---
+
+## Como adicionar uma nova seção
+
+Siga estes passos em ordem:
+
+**1. Crie o JSON de conteúdo**
+
+```json
+// content/sections/nova-secao.json
+{
+  "colors": {},
+  "title": "Título da Nova Seção",
+  "items": []
+}
+```
+
+**2. Crie o componente Vue**
+
+```vue
+<!-- components/sections/NovaSectionSection.vue -->
+<script setup lang="ts">
+const { sections } = useAppConfig()
+const data = sections.novaSection
+</script>
+
+<template>
+  <section :id="'nova-section'">
+    <h2>{{ data.title }}</h2>
+  </section>
+</template>
+```
+
+**3. Registre em `app.config.ts`**
+
+```ts
+import novaSection from './content/sections/nova-secao.json'
+
+export default defineAppConfig({
+  sections: {
+    // ...existentes
+    novaSection,
+  },
+})
+```
+
+**4. Registre em `pages/index.vue`**
+
+```ts
+import NovaSectionSection from '~/components/sections/NovaSectionSection.vue'
+
+const sectionComponents: Record<string, Component> = {
+  // ...existentes
+  NovaSectionSection,
+}
+```
+
+**5. Adicione ao `content/layout.json`**
+
+```json
+{ "id": "nova-section", "component": "NovaSectionSection", "enabled": true }
+```
+
+Posicione o objeto na posição desejada dentro do array.
+
+---
+
+## Histórico de funcionalidades
+
+| Data | Feature | Descrição |
+|---|---|---|
+| 2025-04 | Sistema base de seções | `layout.json` com `enabled`/ordem, componentes dinâmicos via `pages/index.vue` |
+| 2025-04 | Theming runtime | CSS vars via `app.vue`, `@theme inline` no Tailwind, override por seção |
+| 2025-04 | Logo/favicon/fonte configuráveis | `brand.json` com `logo`, `favicon`, `fontFamily` |
+| 2025-04 | Galeria com lightbox | `GallerySection` com transição e navegação por teclado |
+| 2025-04 | Páginas de detalhe | `/item/[slug].vue` gerado a partir de `content/details/items/*.json` |
+| 2026-04 | Versionamento do guia | Campo `version` no frontmatter + link para o repo público oficial |
+| 2026-04 | `colors` nas páginas de detalhe | Campo `colors` suportado em `content/details/items/*.json` |
+
+> Ao implementar uma nova feature, adicione uma linha nesta tabela com a data e descrição resumida.
 
 ---
 
