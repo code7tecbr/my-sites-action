@@ -33,7 +33,8 @@ meu-site/
 │       ├── services.json
 │       ├── mission.json
 │       ├── gallery.json
-│       └── contact.json
+│       ├── contact.json
+│       └── footer.json
 ├── public/
 │   └── (imagens e assets)
 └── .github/

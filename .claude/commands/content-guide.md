@@ -51,7 +51,8 @@ O campo `enabled` controla se uma seção aparece na página. A **ordem do array
     { "id": "about",    "component": "AboutSection",     "enabled": true  },
     { "id": "mission",  "component": "MissionSection",   "enabled": true  },
     { "id": "gallery",  "component": "GallerySection",   "enabled": true  },
-    { "id": "contact",  "component": "ContactSection",   "enabled": true  }
+    { "id": "contact",  "component": "ContactSection",   "enabled": true  },
+    { "id": "footer",   "component": "FooterSection",    "enabled": true  }
   ]
 }
 ```
