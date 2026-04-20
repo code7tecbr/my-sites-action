@@ -1,6 +1,6 @@
 ---
 name: content-guide
-version: 1.5.2
+version: 1.6.0
 description: >
   Guia completo de edição de conteúdo do projeto my-sites. Use este skill sempre que o
   usuário quiser editar textos, imagens, cores, seções ou qualquer configuração do site —
@@ -11,7 +11,7 @@ description: >
 
 # Guia de Conteúdo — my-sites
 
-> **Versão deste guia:** `1.5.2`
+> **Versão deste guia:** `1.6.0`
 > Verifique se há uma versão mais recente no repositório oficial:
 > https://github.com/code7tecbr/my-sites-action/blob/main/.claude/commands/content-guide.md
 
@@ -32,7 +32,9 @@ content/
 │   ├── services.json
 │   ├── mission.json
 │   ├── gallery.json
-│   └── contact.json
+│   ├── contact.json
+│   ├── reviews.json
+│   └── instagram.json
 └── details/
     └── items/          ← uma página de detalhe por arquivo (slug = nome do arquivo)
         └── servico-1.json
@@ -59,7 +61,9 @@ O campo `enabled` controla se uma seção aparece na página. A **ordem do array
     { "id": "about",    "component": "AboutSection",     "enabled": true  },
     { "id": "mission",  "component": "MissionSection",   "enabled": true  },
     { "id": "gallery",  "component": "GallerySection",   "enabled": true  },
-    { "id": "contact",  "component": "ContactSection",   "enabled": true  }
+    { "id": "contact",   "component": "ContactSection",   "enabled": true  },
+    { "id": "reviews",   "component": "ReviewsSection",   "enabled": true  },
+    { "id": "instagram", "component": "InstagramSection",  "enabled": true  }
   ]
 }
 ```
@@ -164,7 +168,8 @@ O nav também tem campo `colors: {}` para override independente:
   "title": "Nome da Empresa",
   "description": "Descrição objetiva para mecanismos de busca (até ~160 caracteres).",
   "ogImage": "/og-image.jpg",
-  "twitterCard": "summary_large_image"
+  "twitterCard": "summary_large_image",
+  "siteUrl": "https://seusite.com.br"
 }
 ```
 
@@ -174,8 +179,11 @@ O nav também tem campo `colors: {}` para override independente:
 | `description` | Snippet do Google, preview do WhatsApp/Telegram |
 | `ogImage` | Imagem ao compartilhar no WhatsApp, Facebook, LinkedIn |
 | `twitterCard` | Tipo de card no Twitter: `summary` ou `summary_large_image` |
+| `siteUrl` | URL canônica do site — usada pelos dados estruturados (Schema.org) |
 
 A imagem `ogImage` deve ter 1200×630px para melhor compatibilidade.
+
+> **Dados estruturados (Schema.org):** o site injeta automaticamente JSON-LD no `<head>` com os schemas `WebSite` e `LocalBusiness`, incluindo catálogo de serviços, avaliações e redes sociais. Isso melhora a visibilidade no Google (rich results) e a compreensão por IAs como ChatGPT e Perplexity. Preencha `siteUrl` corretamente para que os schemas funcionem.
 
 ---
 
@@ -419,6 +427,74 @@ O footer é renderizado **automaticamente** no layout — não precisa estar em 
 
 ---
 
+### Avaliações — `content/sections/reviews.json`
+
+Seção de depoimentos e avaliações de clientes com estrelas, nota média e avatar.
+
+```json
+{
+  "colors": {},
+  "title": "O que dizem sobre nós",
+  "subtitle": "Avaliações",
+  "items": [
+    {
+      "name": "Ana Silva",
+      "role": "Cliente",
+      "avatar": "/fotos/ana.jpg",
+      "rating": 5,
+      "text": "Excelente atendimento! Superou todas as minhas expectativas."
+    }
+  ]
+}
+```
+
+| Campo | Obrigatório | Descrição |
+|---|---|---|
+| `name` | sim | Nome do cliente |
+| `role` | não | Cargo ou descrição (ex: "Cliente", "CEO da Empresa X") |
+| `avatar` | não | Foto do cliente. Se vazio, exibe a inicial do nome |
+| `rating` | sim | Nota de 1 a 5 |
+| `text` | sim | Texto do depoimento |
+
+> As avaliações alimentam automaticamente o schema `AggregateRating` do Google. Quanto mais avaliações e maior a média, maior a chance de aparecer a nota em estrelas nos resultados de busca.
+
+---
+
+### Instagram — `content/sections/instagram.json`
+
+Feed curado do Instagram com grid de fotos e link para o perfil.
+
+```json
+{
+  "colors": {},
+  "title": "Instagram",
+  "subtitle": "Nos siga nas redes",
+  "username": "@seu_usuario",
+  "profileUrl": "https://instagram.com/seu_usuario",
+  "items": [
+    {
+      "url": "https://instagram.com/p/codigo-do-post",
+      "image": "/fotos/insta-1.jpg",
+      "alt": "Descrição do post"
+    }
+  ]
+}
+```
+
+| Campo | Obrigatório | Descrição |
+|---|---|---|
+| `username` | não | Handle exibido abaixo do título (ex: `@minhaempresa`) |
+| `profileUrl` | não | URL completa do perfil — ativa o botão "Ver perfil no Instagram" |
+| `items[].url` | sim | Link direto para o post no Instagram |
+| `items[].image` | sim | Imagem do post (salve em `public/` ou use URL externa) |
+| `items[].alt` | sim | Descrição da imagem (acessibilidade e SEO) |
+
+- Grid responsivo: 2 colunas no mobile, 3 no desktop
+- Recomendamos múltiplos de 3 para preencher o grid sem espaços vazios (ex: 3, 6, 9)
+- As fotos abrem o post original no Instagram em nova aba ao clicar
+
+---
+
 ## Páginas de Detalhe — `content/details/items/`
 
 Cada arquivo JSON cria uma página em `/item/[slug]`, onde o slug é o **nome do arquivo sem `.json`**.
@@ -539,8 +615,8 @@ Posicione o objeto na posição desejada dentro do array.
 - **Internacionalização (i18n)**: suporte a múltiplos idiomas via arquivos `content/[locale]/`.
 - **Temas predefinidos**: seletor de temas no admin que troca todas as cores de uma vez.
 - **Suporte a vídeo no hero**: campo `backgroundVideo` alternativo ao `backgroundImages`.
-- **Seção de depoimentos**: `content/sections/testimonials.json` com array de depoimentos.
 - **Blog/notícias**: `content/posts/` com listagem e páginas de artigo.
+- **Instagram feed dinâmico**: busca automática dos posts via Instagram Graph API (issue #2).
 
 ---
 
@@ -563,5 +639,10 @@ Posicione o objeto na posição desejada dentro do array.
 | 2026-04 | Release v0.1.3 | Versionamento sincronizado com package.json |
 | 2026-04 | Release v0.1.4 | Versionamento sincronizado com package.json |
 | 2026-04 | Carrossel no hero | `backgroundImages` (array até 5) com cross-fade e indicadores clicáveis |
+| 2026-04 | CTA tracking na página de detalhe | Evento `cta_click` enviado ao GA4 via `useTrackEvent` com `item_slug` e `cta_label` |
+| 2026-04 | ReviewsSection | Seção de avaliações com estrelas, nota média e avatar; alimenta `AggregateRating` no Schema.org |
+| 2026-04 | InstagramSection | Feed curado do Instagram via `content/sections/instagram.json` com grid responsivo |
+| 2026-04 | Schema.org / dados estruturados | `composables/useStructuredData.ts` injeta JSON-LD (`WebSite` + `LocalBusiness`) no `<head>` |
+| 2026-04 | `siteUrl` no seo.json | Campo adicionado para alimentar os schemas de dados estruturados |
 
 > Ao implementar uma nova feature, adicione uma linha nesta tabela com a data e descrição resumida.
