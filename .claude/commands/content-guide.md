@@ -144,7 +144,10 @@ O nav também tem campo `colors: {}` para override independente:
   "fontFamily": "'Montserrat', sans-serif",
   "primaryColor": "#7c3aed",
   "accentColor": "#ea580c",
-  "foregroundColor": "#ffffff"
+  "foregroundColor": "#ffffff",
+  "backgroundColor": "#0f0f0f",
+  "secondaryBackground": "#1a1a1a",
+  "mutedColor": "#9ca3af"
 }
 ```
 
@@ -156,6 +159,10 @@ O nav também tem campo `colors: {}` para override independente:
 | `logoHeight` | Altura da logo em pixels |
 | `favicon` | Ícone da aba do browser |
 | `fontFamily` | Fonte principal. String vazia = usa Inter (padrão) |
+| `foregroundColor` | Cor do texto principal — deve contrastar com `backgroundColor` |
+| `backgroundColor` | Cor de fundo geral do site |
+| `secondaryBackground` | Fundo de seções alternadas (ex: galeria) |
+| `mutedColor` | Cor de textos secundários, legendas e detalhes |
 
 > Para usar uma fonte do Google Fonts, inclua o `@import` no campo `fontFamily` **ou** adicione a tag `<link>` manualmente em `app.vue`.
 
