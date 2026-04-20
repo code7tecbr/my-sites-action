@@ -17,6 +17,7 @@ content/
 ├── brand.json          ← identidade visual e cores globais
 ├── nav.json            ← links do menu de navegação
 ├── seo.json            ← metadados de SEO e compartilhamento
+├── analytics.json      ← IDs de rastreamento (GA4 e Cloudflare Analytics)
 ├── layout.json         ← quais seções estão ativas e em qual ordem
 └── sections/
 │   ├── hero.json
@@ -169,6 +170,31 @@ O nav também tem campo `colors: {}` para override independente:
 | `twitterCard` | Tipo de card no Twitter: `summary` ou `summary_large_image` |
 
 A imagem `ogImage` deve ter 1200×630px para melhor compatibilidade.
+
+---
+
+## Analytics — `content/analytics.json`
+
+Controla os provedores de rastreamento do site. Ambos os campos são opcionais — string vazia desativa o provider correspondente.
+
+```json
+{
+  "gaId": "G-XXXXXXXXXX",
+  "cfToken": "seu-token-cf"
+}
+```
+
+| Campo | Provedor | Como obter |
+|---|---|---|
+| `gaId` | Google Analytics 4 | Google Analytics → Admin → Fluxos de dados → ID de medição |
+| `cfToken` | Cloudflare Web Analytics | Painel CF → Web Analytics → Sites → token do beacon |
+
+- **GA4** (`gaId`): rastreamento completo com eventos, funis e relatórios avançados.
+- **Cloudflare Web Analytics** (`cfToken`): analytics sem cookies, LGPD-friendly, dados visíveis no painel da Cloudflare.
+
+Os dois podem estar ativos ao mesmo tempo. Deixar o campo vazio (`""`) desativa o provider.
+
+> Esses IDs são **públicos por design** — ficam visíveis no HTML do site e não precisam de variáveis de ambiente.
 
 ---
 
@@ -506,6 +532,7 @@ Posicione o objeto na posição desejada dentro do array.
 | 2026-04 | Grid adaptativo em serviços | `auto-fit` no grid — se adapta a 1, 2 ou N itens sem espaço vazio |
 | 2026-04 | Footer no layout com `enabled` | Footer renderizado no layout por padrão; desativar com `"enabled": false` em `footer.json` |
 | 2026-04 | `social` no footer | Campos `instagram`, `facebook`, `whatsapp` disponíveis em `footer.json` |
+| 2026-04 | Analytics dual-provider | `content/analytics.json` com suporte a GA4 (`nuxt-gtag`) e Cloudflare Web Analytics simultâneos |
 
 > Ao implementar uma nova feature, adicione uma linha nesta tabela com a data e descrição resumida.
 
