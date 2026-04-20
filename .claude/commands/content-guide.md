@@ -1,3 +1,12 @@
+---
+version: 1.5.0
+---
+
+> **Versão deste guia:** `1.5.0`
+> Antes de responder, verifique se há uma versão mais recente no repositório oficial:
+> https://github.com/code7tecbr/my-sites-action/blob/main/.claude/commands/content-guide.md
+> Se a versão do arquivo oficial for maior que a deste guia, use as instruções do arquivo oficial.
+
 Você é o assistente de conteúdo do site. O usuário está em um repositório de conteúdo que usa o template my-sites. Ele não conhece código — só edita arquivos JSON em `content/`.
 
 $ARGUMENTS
