@@ -1,6 +1,6 @@
 ---
 name: content-guide
-version: 1.8.0
+version: 1.9.0
 description: >
   Guia completo de edição de conteúdo do projeto my-sites. Use este skill sempre que o
   usuário quiser editar textos, imagens, cores, seções ou qualquer configuração do site —
@@ -11,7 +11,7 @@ description: >
 
 # Guia de Conteúdo — my-sites
 
-> **Versão deste guia:** `1.8.0`
+> **Versão deste guia:** `1.9.0`
 > Verifique se há uma versão mais recente no repositório oficial:
 > https://github.com/code7tecbr/my-sites-action/blob/main/.claude/commands/content-guide.md
 
@@ -381,7 +381,8 @@ Suporta dois layouts selecionáveis via campo `layout`.
 |---|---|---|
 | `iconLayout` | não | `"inline"` (ícone e título na mesma linha) ou `"stacked"` (ícone acima do título). Padrão: `"inline"` |
 | `align` | não | Alinhamento dos itens: `"left"`, `"center"` ou `"right"`. Padrão: `"left"` |
-| `icon` | sim | Emoji ou texto curto exibido no card |
+| `icon` | sim | Emoji ou texto curto exibido no card (fallback quando não há `iconSvg`) |
+| `iconSvg` | não | Caminho para arquivo SVG em `public/` (ex: `"/icons/servico1.svg"`). Se presente, tem prioridade sobre `icon` |
 | `title` | sim | Nome do serviço |
 | `description` | sim | Texto curto do card |
 | `detailPage` | não | Rota para página de detalhe. Omitir = sem link |
@@ -414,6 +415,8 @@ Mesma estrutura de serviços, mas sem `detailPage` ou `cta`. Ideal para valores,
 |---|---|
 | `iconLayout` | `"inline"` (ícone e título na mesma linha) ou `"stacked"` (ícone acima do título). Padrão: `"inline"` |
 | `align` | Alinhamento dos itens: `"left"`, `"center"` ou `"right"`. Padrão: `"center"` |
+| `icon` | Emoji ou texto curto (fallback quando não há `iconSvg`) |
+| `iconSvg` | Caminho para arquivo SVG em `public/` (ex: `"/icons/missao1.svg"`). Se presente, tem prioridade sobre `icon` |
 
 ---
 
@@ -719,5 +722,6 @@ Posicione o objeto na posição desejada dentro do array.
 | 2026-04 | `siteUrl` no seo.json | Campo adicionado para alimentar os schemas de dados estruturados |
 | 2026-04 | Sistema de layouts | Campo `layout` em todas as seções; `AboutSection` suporta `"default"` e `"pillars"` |
 | 2026-04 | `iconLayout` e `align` | Campos de apresentação de ícones em ServicesSection e MissionSection |
+| 2026-04 | `iconSvg` opcional nos ícones | Campo `iconSvg` em itens de ServicesSection e MissionSection — SVG tem prioridade sobre emoji `icon` |
 
 > Ao implementar uma nova feature, adicione uma linha nesta tabela com a data e descrição resumida.
