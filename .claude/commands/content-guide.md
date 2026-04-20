@@ -1,6 +1,6 @@
 ---
 name: content-guide
-version: 1.11.0
+version: 1.12.0
 description: >
   Guia completo de edição de conteúdo do projeto my-sites. Use este skill sempre que o
   usuário quiser editar textos, imagens, cores, seções ou qualquer configuração do site —
@@ -11,7 +11,7 @@ description: >
 
 # Guia de Conteúdo — my-sites
 
-> **Versão deste guia:** `1.11.0`
+> **Versão deste guia:** `1.12.0`
 > Verifique se há uma versão mais recente no repositório oficial:
 > https://github.com/code7tecbr/my-sites-action/blob/main/.claude/commands/content-guide.md
 
@@ -146,6 +146,8 @@ Cada `content/sections/*.json` tem um campo `colors: {}` que permite sobrescreve
 ```
 
 > As chaves disponíveis em `colors` dependem do que cada componente consome. Consulte o componente correspondente em `components/sections/` para ver quais variáveis ele respeita.
+
+> **Atenção:** `foreground` em `colors` é uma CSS variable aplicada à `<section>` inteira e cascateia para **todos** os textos filhos — não apenas o título. Para colorir somente o título da seção (H2), use o campo `titleColor` disponível em todas as seções com `title`. Para colorir somente o título de um item/pilar (H3), use `items[].titleColor` ou `pillars[].titleColor`.
 
 ### Nav com cores próprias — `content/nav.json`
 
@@ -343,6 +345,7 @@ Suporta dois layouts selecionáveis via campo `layout`.
 |---|---|---|
 | `layout` | ambos | `"default"` ou `"pillars"`. Padrão: `"default"` |
 | `title` | ambos | Título da seção |
+| `titleColor` | ambos | Cor exclusiva do título da seção (H2). Não afeta outros textos |
 | `body` | default | Texto longo. Suporta `\n` para quebras de linha |
 | `image` | default | Foto ilustrativa ao lado do texto |
 | `imageAlt` | default | Texto alternativo da imagem (acessibilidade e SEO) |
@@ -350,7 +353,8 @@ Suporta dois layouts selecionáveis via campo `layout`.
 | `pillars[].icon` | pillars | Emoji exibido acima do título (opcional; fallback quando não há `iconSvg`) |
 | `pillars[].iconSvg` | pillars | Caminho para SVG em `public/` (opcional; tem prioridade sobre `icon`) |
 | `pillars[].iconSize` | pillars | `"sm"`, `"md"`, `"lg"` ou `"xl"`. Padrão: `"md"` |
-| `pillars[].bg` | pillars | Cor de fundo do card (qualquer valor CSS: `"#1a1a2e"`, `"rgba(0,0,0,0.3)"`) |
+| `pillars[].bg` | pillars | Cor de fundo do card (qualquer valor CSS: `"#1a1a2e"`, `"rgba(0,0,0,0.3)"`). Quando presente, a borda do card é removida automaticamente |
+| `pillars[].titleColor` | pillars | Cor exclusiva do título do pilar (H3). Não afeta outros textos |
 | `pillars[].title` | pillars | Nome do pilar |
 | `pillars[].text` | pillars | Descrição do pilar |
 
@@ -387,10 +391,12 @@ Suporta dois layouts selecionáveis via campo `layout`.
 |---|---|---|
 | `iconLayout` | não | `"inline"` (ícone e título na mesma linha) ou `"stacked"` (ícone acima do título). Padrão: `"inline"` |
 | `align` | não | Alinhamento dos itens: `"left"`, `"center"` ou `"right"`. Padrão: `"left"` |
+| `titleColor` | não | Cor exclusiva do título da seção (H2). Não afeta outros textos |
 | `icon` | sim | Emoji ou texto curto exibido no card (fallback quando não há `iconSvg`) |
 | `iconSvg` | não | Caminho para arquivo SVG em `public/` (ex: `"/icons/servico1.svg"`). Se presente, tem prioridade sobre `icon` |
 | `iconSize` | não | Tamanho do SVG: `"sm"`, `"md"`, `"lg"` ou `"xl"`. Padrão: `"md"` |
 | `title` | sim | Nome do serviço |
+| `items[].titleColor` | não | Cor exclusiva do título do item (H3). Não afeta outros textos |
 | `description` | sim | Texto curto do card |
 | `detailPage` | não | Rota para página de detalhe. Omitir = sem link |
 | `cta` | não | Botão de ação extra no card |
@@ -422,10 +428,12 @@ Mesma estrutura de serviços, mas sem `detailPage` ou `cta`. Ideal para valores,
 |---|---|
 | `iconLayout` | `"inline"` (ícone e título na mesma linha) ou `"stacked"` (ícone acima do título). Padrão: `"inline"` |
 | `align` | Alinhamento dos itens: `"left"`, `"center"` ou `"right"`. Padrão: `"center"` |
+| `titleColor` | Cor exclusiva do título da seção (H2). Não afeta outros textos |
 | `icon` | Emoji ou texto curto (fallback quando não há `iconSvg`) |
 | `iconSvg` | Caminho para arquivo SVG em `public/` (ex: `"/icons/missao1.svg"`). Se presente, tem prioridade sobre `icon` |
 | `iconSize` | Tamanho do SVG: `"sm"`, `"md"`, `"lg"` ou `"xl"`. Padrão: `"md"` |
 | `bg` | Cor de fundo do item (qualquer valor CSS: `"#1a1a2e"`, `"rgba(0,0,0,0.3)"`). Quando presente, adiciona `rounded-2xl p-6` ao card automaticamente |
+| `items[].titleColor` | Cor exclusiva do título do item (H3). Não afeta outros textos |
 
 ---
 
@@ -444,6 +452,7 @@ Mesma estrutura de serviços, mas sem `detailPage` ou `cta`. Ideal para valores,
 - Imagens em `public/` são referenciadas com `/caminho/arquivo.jpg`
 - O `alt` é obrigatório para acessibilidade e SEO
 - A galeria abre lightbox ao clicar. Sem limite de itens, mas recomendamos até 12 para performance
+- `titleColor` (opcional): cor exclusiva do título da seção. Ex: `"titleColor": "#7c3aed"`
 
 ---
 
@@ -465,6 +474,7 @@ Mesma estrutura de serviços, mas sem `detailPage` ou `cta`. Ideal para valores,
 ```
 
 - Campos vazios (`""`) são omitidos da renderização
+- `titleColor` (opcional): cor exclusiva do título da seção. Ex: `"titleColor": "#7c3aed"`
 - `instagram` e `facebook` → apenas o **username**, sem `@`, sem `https://`, sem URL completa (ex: `"meu_perfil"`, não `"instagram.com/meu_perfil"`)
 - `whatsapp` → apenas números: DDI + DDD + número, sem espaços ou símbolos (ex: `"5511900000000"`)
 
@@ -535,6 +545,7 @@ Seção de depoimentos e avaliações de clientes com estrelas, nota média e av
 
 | Campo | Obrigatório | Descrição |
 |---|---|---|
+| `titleColor` | não | Cor exclusiva do título da seção (H2). Não afeta outros textos |
 | `name` | sim | Nome do cliente |
 | `role` | não | Cargo ou descrição (ex: "Cliente", "CEO da Empresa X") |
 | `avatar` | não | Foto do cliente. Se vazio, exibe a inicial do nome |
@@ -568,6 +579,7 @@ Feed curado do Instagram com grid de fotos e link para o perfil.
 
 | Campo | Obrigatório | Descrição |
 |---|---|---|
+| `titleColor` | não | Cor exclusiva do título da seção (H2). Não afeta outros textos |
 | `username` | não | Handle exibido abaixo do título (ex: `@minhaempresa`) |
 | `profileUrl` | não | URL completa do perfil — ativa o botão "Ver perfil no Instagram" |
 | `items[].url` | sim | Link direto para o post no Instagram |
@@ -735,5 +747,8 @@ Posicione o objeto na posição desejada dentro do array.
 | 2026-04 | `iconSize` por item | Campo `iconSize` (`sm`/`md`/`lg`/`xl`) em ServicesSection, MissionSection e AboutSection (pillars) |
 | 2026-04 | Ícones nos pillars do AboutSection | Campos `icon`, `iconSvg` e `iconSize` disponíveis nos itens do layout `"pillars"` |
 | 2026-04 | Campo `bg` por item | Fundo individual por item em MissionSection e por pilar em AboutSection (`"pillars"`) |
+| 2026-04 | `titleColor` por título | Campo opcional em todas as seções com `title` (H2) e nos itens/pillars de Mission, Services e About (H3) |
+| 2026-04 | Fix `bg` no AboutSection | Borda do card removida automaticamente quando `pillars[].bg` está presente (consistente com MissionSection) |
+| 2026-04 | Fix ícone centralizado (stacked) | Ícones SVG agora centralizam corretamente com `mx-auto` em MissionSection e ServicesSection |
 
 > Ao implementar uma nova feature, adicione uma linha nesta tabela com a data e descrição resumida.
