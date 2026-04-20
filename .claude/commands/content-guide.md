@@ -1,6 +1,6 @@
 ---
 name: content-guide
-version: 1.7.0
+version: 1.8.0
 description: >
   Guia completo de edição de conteúdo do projeto my-sites. Use este skill sempre que o
   usuário quiser editar textos, imagens, cores, seções ou qualquer configuração do site —
@@ -11,7 +11,7 @@ description: >
 
 # Guia de Conteúdo — my-sites
 
-> **Versão deste guia:** `1.7.0`
+> **Versão deste guia:** `1.8.0`
 > Verifique se há uma versão mais recente no repositório oficial:
 > https://github.com/code7tecbr/my-sites-action/blob/main/.claude/commands/content-guide.md
 
@@ -91,6 +91,15 @@ Trocar o layout não exige nenhuma alteração no código — basta editar o JSO
 | `about` | `default` | Texto à esquerda + foto à direita |
 | `about` | `pillars` | Título centralizado + 3 colunas de valores (sem foto) |
 | todas as outras | `default` | Layout padrão (único por enquanto) |
+
+### Campos de apresentação de ícones
+
+Disponíveis em `services.json` e `mission.json`:
+
+| Campo | Valores | Descrição |
+|---|---|---|
+| `iconLayout` | `"inline"` / `"stacked"` | `inline` = ícone e título na mesma linha; `stacked` = ícone acima do título |
+| `align` | `"left"` / `"center"` / `"right"` | Alinhamento horizontal dos itens dentro do card |
 
 > Novos layouts são adicionados por seção conforme a necessidade. O campo `layout` já existe em todos os JSONs como reserva para variantes futuras.
 
@@ -346,6 +355,9 @@ Suporta dois layouts selecionáveis via campo `layout`.
 ```json
 {
   "colors": {},
+  "layout": "default",
+  "iconLayout": "inline",
+  "align": "left",
   "title": "Nossos Serviços",
   "subtitle": "O que podemos fazer por você",
   "items": [
@@ -367,6 +379,8 @@ Suporta dois layouts selecionáveis via campo `layout`.
 
 | Campo | Obrigatório | Descrição |
 |---|---|---|
+| `iconLayout` | não | `"inline"` (ícone e título na mesma linha) ou `"stacked"` (ícone acima do título). Padrão: `"inline"` |
+| `align` | não | Alinhamento dos itens: `"left"`, `"center"` ou `"right"`. Padrão: `"left"` |
 | `icon` | sim | Emoji ou texto curto exibido no card |
 | `title` | sim | Nome do serviço |
 | `description` | sim | Texto curto do card |
@@ -382,6 +396,9 @@ Para adicionar um serviço, adicione um objeto ao array `items`. Para remover, d
 ```json
 {
   "colors": {},
+  "layout": "default",
+  "iconLayout": "inline",
+  "align": "center",
   "title": "Nossa Missão",
   "items": [
     { "icon": "⭐", "title": "Excelência",   "description": "Entregamos o melhor em cada projeto." },
@@ -391,7 +408,12 @@ Para adicionar um serviço, adicione um objeto ao array `items`. Para remover, d
 }
 ```
 
-Estrutura idêntica à de serviços, mas sem `detailPage` ou `cta`. Ideal para valores, diferenciais ou pilares da empresa.
+Mesma estrutura de serviços, mas sem `detailPage` ou `cta`. Ideal para valores, diferenciais ou pilares da empresa.
+
+| Campo | Descrição |
+|---|---|
+| `iconLayout` | `"inline"` (ícone e título na mesma linha) ou `"stacked"` (ícone acima do título). Padrão: `"inline"` |
+| `align` | Alinhamento dos itens: `"left"`, `"center"` ou `"right"`. Padrão: `"center"` |
 
 ---
 
@@ -696,5 +718,6 @@ Posicione o objeto na posição desejada dentro do array.
 | 2026-04 | Schema.org / dados estruturados | `composables/useStructuredData.ts` injeta JSON-LD (`WebSite` + `LocalBusiness`) no `<head>` |
 | 2026-04 | `siteUrl` no seo.json | Campo adicionado para alimentar os schemas de dados estruturados |
 | 2026-04 | Sistema de layouts | Campo `layout` em todas as seções; `AboutSection` suporta `"default"` e `"pillars"` |
+| 2026-04 | `iconLayout` e `align` | Campos de apresentação de ícones em ServicesSection e MissionSection |
 
 > Ao implementar uma nova feature, adicione uma linha nesta tabela com a data e descrição resumida.
