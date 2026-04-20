@@ -1,6 +1,6 @@
 ---
 name: content-guide
-version: 1.10.0
+version: 1.11.0
 description: >
   Guia completo de edição de conteúdo do projeto my-sites. Use este skill sempre que o
   usuário quiser editar textos, imagens, cores, seções ou qualquer configuração do site —
@@ -11,7 +11,7 @@ description: >
 
 # Guia de Conteúdo — my-sites
 
-> **Versão deste guia:** `1.10.0`
+> **Versão deste guia:** `1.11.0`
 > Verifique se há uma versão mais recente no repositório oficial:
 > https://github.com/code7tecbr/my-sites-action/blob/main/.claude/commands/content-guide.md
 
@@ -350,6 +350,7 @@ Suporta dois layouts selecionáveis via campo `layout`.
 | `pillars[].icon` | pillars | Emoji exibido acima do título (opcional; fallback quando não há `iconSvg`) |
 | `pillars[].iconSvg` | pillars | Caminho para SVG em `public/` (opcional; tem prioridade sobre `icon`) |
 | `pillars[].iconSize` | pillars | `"sm"`, `"md"`, `"lg"` ou `"xl"`. Padrão: `"md"` |
+| `pillars[].bg` | pillars | Cor de fundo do card (qualquer valor CSS: `"#1a1a2e"`, `"rgba(0,0,0,0.3)"`) |
 | `pillars[].title` | pillars | Nome do pilar |
 | `pillars[].text` | pillars | Descrição do pilar |
 
@@ -424,6 +425,7 @@ Mesma estrutura de serviços, mas sem `detailPage` ou `cta`. Ideal para valores,
 | `icon` | Emoji ou texto curto (fallback quando não há `iconSvg`) |
 | `iconSvg` | Caminho para arquivo SVG em `public/` (ex: `"/icons/missao1.svg"`). Se presente, tem prioridade sobre `icon` |
 | `iconSize` | Tamanho do SVG: `"sm"`, `"md"`, `"lg"` ou `"xl"`. Padrão: `"md"` |
+| `bg` | Cor de fundo do item (qualquer valor CSS: `"#1a1a2e"`, `"rgba(0,0,0,0.3)"`). Quando presente, adiciona `rounded-2xl p-6` ao card automaticamente |
 
 ---
 
@@ -732,5 +734,6 @@ Posicione o objeto na posição desejada dentro do array.
 | 2026-04 | `iconSvg` opcional nos ícones | Campo `iconSvg` em itens de ServicesSection e MissionSection — SVG tem prioridade sobre emoji `icon` |
 | 2026-04 | `iconSize` por item | Campo `iconSize` (`sm`/`md`/`lg`/`xl`) em ServicesSection, MissionSection e AboutSection (pillars) |
 | 2026-04 | Ícones nos pillars do AboutSection | Campos `icon`, `iconSvg` e `iconSize` disponíveis nos itens do layout `"pillars"` |
+| 2026-04 | Campo `bg` por item | Fundo individual por item em MissionSection e por pilar em AboutSection (`"pillars"`) |
 
 > Ao implementar uma nova feature, adicione uma linha nesta tabela com a data e descrição resumida.
