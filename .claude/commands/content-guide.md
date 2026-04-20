@@ -1,6 +1,6 @@
 ---
 name: content-guide
-version: 1.6.0
+version: 1.7.0
 description: >
   Guia completo de edição de conteúdo do projeto my-sites. Use este skill sempre que o
   usuário quiser editar textos, imagens, cores, seções ou qualquer configuração do site —
@@ -11,7 +11,7 @@ description: >
 
 # Guia de Conteúdo — my-sites
 
-> **Versão deste guia:** `1.6.0`
+> **Versão deste guia:** `1.7.0`
 > Verifique se há uma versão mais recente no repositório oficial:
 > https://github.com/code7tecbr/my-sites-action/blob/main/.claude/commands/content-guide.md
 
@@ -71,6 +71,28 @@ O campo `enabled` controla se uma seção aparece na página. A **ordem do array
 - `"enabled": false` → seção some da página sem precisar deletar nada
 - Para reordenar seções, basta mover o objeto no array
 - O campo `component` deve corresponder exatamente ao nome do componente registrado em `pages/index.vue`
+
+---
+
+## Sistema de Layouts
+
+Cada seção suporta um campo `layout` que seleciona o template visual a usar. O padrão é sempre `"default"`.
+
+```json
+{ "layout": "default" }
+```
+
+Trocar o layout não exige nenhuma alteração no código — basta editar o JSON da seção.
+
+### Layouts disponíveis por seção
+
+| Seção | Layout | Descrição |
+|---|---|---|
+| `about` | `default` | Texto à esquerda + foto à direita |
+| `about` | `pillars` | Título centralizado + 3 colunas de valores (sem foto) |
+| todas as outras | `default` | Layout padrão (único por enquanto) |
+
+> Novos layouts são adicionados por seção conforme a necessidade. O campo `layout` já existe em todos os JSONs como reserva para variantes futuras.
 
 ---
 
@@ -278,9 +300,14 @@ Primeira seção da página, com chamada principal e CTA. Suporta carrossel de a
 
 ### Sobre — `content/sections/about.json`
 
+Suporta dois layouts selecionáveis via campo `layout`.
+
+**`layout: "default"`** — texto à esquerda, foto à direita:
+
 ```json
 {
   "colors": {},
+  "layout": "default",
   "title": "Sobre Nós",
   "body": "Conte aqui a história da empresa...",
   "image": "/about.jpg",
@@ -288,12 +315,29 @@ Primeira seção da página, com chamada principal e CTA. Suporta carrossel de a
 }
 ```
 
-| Campo | Descrição |
-|---|---|
-| `title` | Título da seção |
-| `body` | Texto longo. Suporta `\n` para quebras de linha |
-| `image` | Foto ilustrativa ao lado do texto |
-| `imageAlt` | Texto alternativo da imagem (acessibilidade e SEO) |
+**`layout: "pillars"`** — título centralizado + 3 colunas de valores, sem foto:
+
+```json
+{
+  "colors": {},
+  "layout": "pillars",
+  "title": "Sobre Nós",
+  "pillars": [
+    { "title": "Inovação",        "text": "Soluções personalizadas e inovadoras." },
+    { "title": "Excelência",      "text": "O melhor em cada projeto, sem abrir mão da qualidade." },
+    { "title": "Profissionalismo","text": "Equipe competente e dedicada às suas necessidades." }
+  ]
+}
+```
+
+| Campo | Layout | Descrição |
+|---|---|---|
+| `layout` | ambos | `"default"` ou `"pillars"`. Padrão: `"default"` |
+| `title` | ambos | Título da seção |
+| `body` | default | Texto longo. Suporta `\n` para quebras de linha |
+| `image` | default | Foto ilustrativa ao lado do texto |
+| `imageAlt` | default | Texto alternativo da imagem (acessibilidade e SEO) |
+| `pillars` | pillars | Array de 3 objetos `{ title, text }` com os valores da empresa |
 
 ---
 
@@ -651,5 +695,6 @@ Posicione o objeto na posição desejada dentro do array.
 | 2026-04 | InstagramSection | Feed curado do Instagram via `content/sections/instagram.json` com grid responsivo |
 | 2026-04 | Schema.org / dados estruturados | `composables/useStructuredData.ts` injeta JSON-LD (`WebSite` + `LocalBusiness`) no `<head>` |
 | 2026-04 | `siteUrl` no seo.json | Campo adicionado para alimentar os schemas de dados estruturados |
+| 2026-04 | Sistema de layouts | Campo `layout` em todas as seções; `AboutSection` suporta `"default"` e `"pillars"` |
 
 > Ao implementar uma nova feature, adicione uma linha nesta tabela com a data e descrição resumida.
