@@ -1,6 +1,6 @@
 ---
 name: content-guide
-version: 1.9.0
+version: 1.10.0
 description: >
   Guia completo de edição de conteúdo do projeto my-sites. Use este skill sempre que o
   usuário quiser editar textos, imagens, cores, seções ou qualquer configuração do site —
@@ -11,7 +11,7 @@ description: >
 
 # Guia de Conteúdo — my-sites
 
-> **Versão deste guia:** `1.9.0`
+> **Versão deste guia:** `1.10.0`
 > Verifique se há uma versão mais recente no repositório oficial:
 > https://github.com/code7tecbr/my-sites-action/blob/main/.claude/commands/content-guide.md
 
@@ -332,8 +332,8 @@ Suporta dois layouts selecionáveis via campo `layout`.
   "layout": "pillars",
   "title": "Sobre Nós",
   "pillars": [
-    { "title": "Inovação",        "text": "Soluções personalizadas e inovadoras." },
-    { "title": "Excelência",      "text": "O melhor em cada projeto, sem abrir mão da qualidade." },
+    { "icon": "💡", "title": "Inovação",        "text": "Soluções personalizadas e inovadoras." },
+    { "iconSvg": "/icons/estrela.svg", "iconSize": "lg", "title": "Excelência", "text": "O melhor em cada projeto." },
     { "title": "Profissionalismo","text": "Equipe competente e dedicada às suas necessidades." }
   ]
 }
@@ -346,7 +346,12 @@ Suporta dois layouts selecionáveis via campo `layout`.
 | `body` | default | Texto longo. Suporta `\n` para quebras de linha |
 | `image` | default | Foto ilustrativa ao lado do texto |
 | `imageAlt` | default | Texto alternativo da imagem (acessibilidade e SEO) |
-| `pillars` | pillars | Array de 3 objetos `{ title, text }` com os valores da empresa |
+| `pillars` | pillars | Array de objetos com os valores da empresa |
+| `pillars[].icon` | pillars | Emoji exibido acima do título (opcional; fallback quando não há `iconSvg`) |
+| `pillars[].iconSvg` | pillars | Caminho para SVG em `public/` (opcional; tem prioridade sobre `icon`) |
+| `pillars[].iconSize` | pillars | `"sm"`, `"md"`, `"lg"` ou `"xl"`. Padrão: `"md"` |
+| `pillars[].title` | pillars | Nome do pilar |
+| `pillars[].text` | pillars | Descrição do pilar |
 
 ---
 
@@ -383,6 +388,7 @@ Suporta dois layouts selecionáveis via campo `layout`.
 | `align` | não | Alinhamento dos itens: `"left"`, `"center"` ou `"right"`. Padrão: `"left"` |
 | `icon` | sim | Emoji ou texto curto exibido no card (fallback quando não há `iconSvg`) |
 | `iconSvg` | não | Caminho para arquivo SVG em `public/` (ex: `"/icons/servico1.svg"`). Se presente, tem prioridade sobre `icon` |
+| `iconSize` | não | Tamanho do SVG: `"sm"`, `"md"`, `"lg"` ou `"xl"`. Padrão: `"md"` |
 | `title` | sim | Nome do serviço |
 | `description` | sim | Texto curto do card |
 | `detailPage` | não | Rota para página de detalhe. Omitir = sem link |
@@ -417,6 +423,7 @@ Mesma estrutura de serviços, mas sem `detailPage` ou `cta`. Ideal para valores,
 | `align` | Alinhamento dos itens: `"left"`, `"center"` ou `"right"`. Padrão: `"center"` |
 | `icon` | Emoji ou texto curto (fallback quando não há `iconSvg`) |
 | `iconSvg` | Caminho para arquivo SVG em `public/` (ex: `"/icons/missao1.svg"`). Se presente, tem prioridade sobre `icon` |
+| `iconSize` | Tamanho do SVG: `"sm"`, `"md"`, `"lg"` ou `"xl"`. Padrão: `"md"` |
 
 ---
 
@@ -723,5 +730,7 @@ Posicione o objeto na posição desejada dentro do array.
 | 2026-04 | Sistema de layouts | Campo `layout` em todas as seções; `AboutSection` suporta `"default"` e `"pillars"` |
 | 2026-04 | `iconLayout` e `align` | Campos de apresentação de ícones em ServicesSection e MissionSection |
 | 2026-04 | `iconSvg` opcional nos ícones | Campo `iconSvg` em itens de ServicesSection e MissionSection — SVG tem prioridade sobre emoji `icon` |
+| 2026-04 | `iconSize` por item | Campo `iconSize` (`sm`/`md`/`lg`/`xl`) em ServicesSection, MissionSection e AboutSection (pillars) |
+| 2026-04 | Ícones nos pillars do AboutSection | Campos `icon`, `iconSvg` e `iconSize` disponíveis nos itens do layout `"pillars"` |
 
 > Ao implementar uma nova feature, adicione uma linha nesta tabela com a data e descrição resumida.
