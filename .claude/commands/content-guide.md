@@ -1,6 +1,6 @@
 ---
 name: content-guide
-version: 1.5.1
+version: 1.5.2
 description: >
   Guia completo de edição de conteúdo do projeto my-sites. Use este skill sempre que o
   usuário quiser editar textos, imagens, cores, seções ou qualquer configuração do site —
@@ -11,7 +11,7 @@ description: >
 
 # Guia de Conteúdo — my-sites
 
-> **Versão deste guia:** `1.5.1`
+> **Versão deste guia:** `1.5.2`
 > Verifique se há uma versão mais recente no repositório oficial:
 > https://github.com/code7tecbr/my-sites-action/blob/main/.claude/commands/content-guide.md
 
@@ -233,7 +233,7 @@ Os dois podem estar ativos simultaneamente. Deixar o campo vazio (`""`) desativa
 
 ### Hero — `content/sections/hero.json`
 
-Primeira seção da página, com chamada principal e CTA.
+Primeira seção da página, com chamada principal e CTA. Suporta carrossel de até **5 imagens** com cross-fade automático a cada 5 segundos e indicadores clicáveis.
 
 ```json
 {
@@ -244,7 +244,10 @@ Primeira seção da página, com chamada principal e CTA.
     "label": "Saiba mais",
     "href": "#about"
   },
-  "backgroundImage": "/hero-bg.jpg"
+  "backgroundImages": [
+    "/images/hero/slide-1.jpg",
+    "/images/hero/slide-2.jpg"
+  ]
 }
 ```
 
@@ -254,7 +257,7 @@ Primeira seção da página, com chamada principal e CTA.
 | `subheadline` | Texto de apoio abaixo do título |
 | `cta.label` | Texto do botão de chamada para ação |
 | `cta.href` | Destino do botão (âncora, rota ou URL externa) |
-| `backgroundImage` | Imagem de fundo. String vazia = fundo com cor `backgroundColor` |
+| `backgroundImages` | Array de imagens para o carrossel (máximo 5). Coloque os arquivos em `public/images/hero/`. Com apenas 1 item, os indicadores não aparecem |
 
 ---
 
@@ -535,7 +538,7 @@ Posicione o objeto na posição desejada dentro do array.
 - **Admin Lite (Fase 2)**: painel `/admin` com edição visual dos JSONs via GitHub API. Save = commit automático → rebuild → deploy no CF Pages.
 - **Internacionalização (i18n)**: suporte a múltiplos idiomas via arquivos `content/[locale]/`.
 - **Temas predefinidos**: seletor de temas no admin que troca todas as cores de uma vez.
-- **Suporte a vídeo no hero**: campo `backgroundVideo` alternativo ao `backgroundImage`.
+- **Suporte a vídeo no hero**: campo `backgroundVideo` alternativo ao `backgroundImages`.
 - **Seção de depoimentos**: `content/sections/testimonials.json` com array de depoimentos.
 - **Blog/notícias**: `content/posts/` com listagem e páginas de artigo.
 
@@ -559,5 +562,6 @@ Posicione o objeto na posição desejada dentro do array.
 | 2026-04 | Analytics dual-provider | `content/analytics.json` com suporte a GA4 (`nuxt-gtag`) e Cloudflare Web Analytics simultâneos |
 | 2026-04 | Release v0.1.3 | Versionamento sincronizado com package.json |
 | 2026-04 | Release v0.1.4 | Versionamento sincronizado com package.json |
+| 2026-04 | Carrossel no hero | `backgroundImages` (array até 5) com cross-fade e indicadores clicáveis |
 
 > Ao implementar uma nova feature, adicione uma linha nesta tabela com a data e descrição resumida.
