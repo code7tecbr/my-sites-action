@@ -25,6 +25,10 @@ inputs:
   alchemy_password:
     description: 'Senha para criptografia do state store do Alchemy (ALCHEMY_PASSWORD)'
     required: true
+  repo_template:
+    description: 'repositório template para deploy (ex: code7tecbr/my-sites)'
+    required: false
+    default: 'code7tecbr/my-sites'
 
 runs:
   using: 'composite'
@@ -35,7 +39,7 @@ runs:
         git \
           -c credential.helper= \
           -c http.https://github.com/.extraheader= \
-          clone https://x-access-token:${{ inputs.template_token }}@github.com/code7tecbr/my-sites.git \
+          clone https://x-access-token:${{ inputs.template_token }}@github.com/${{ inputs.repo_template }}.git \
           ${{ runner.temp }}/my-sites-template
 
     - name: Injetar content/ do cliente
