@@ -1,18 +1,6 @@
 # my-sites-action
 
-GitHub Action para deploy de sites criados com o template [code7tecbr/my-sites](https://github.com/code7tecbr/my-sites).
-
-## Como funciona
-
-1. Clona o template `my-sites` (privado) usando um PAT
-2. Injeta o `content/` e `public/` do repo do cliente
-3. Executa `bun install` + `bun nuxt prepare` + `bun run deploy` (via Alchemy)
-4. Publica no Cloudflare Pages
-5. Persiste o state do Alchemy de volta no repo do cliente (commit automático)
-
-O código-fonte do template nunca fica exposto ao cliente.
-
----
+GitHub Action para deploy de sites criados com o [template](https://dev.code7.tec.br).
 
 ## Setup de um novo cliente — passo a passo
 
@@ -41,9 +29,6 @@ meu-site/
     └── workflows/
         └── deploy.yml
 ```
-
-Copie os JSONs de exemplo do template `code7tecbr/my-sites` (pasta `content/`) como ponto de partida.
-
 ### 2. Criar o workflow de deploy
 
 Crie o arquivo `.github/workflows/deploy.yml` no repo do cliente:
@@ -54,27 +39,30 @@ name: Deploy
 on:
   push:
     branches: [main]
+concurrency:
+  group: deploy
+  cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: code7tecbr/my-sites-action@v1
+      - uses: code7tecbr/my-sites-action@v1.1
         with:
           app_name: ${{ secrets.APP_NAME }}
           cf_api_token: ${{ secrets.CF_API_TOKEN }}
           cf_account_id: ${{ secrets.CF_ACCOUNT_ID }}
           template_token: ${{ secrets.TEMPLATE_TOKEN }}
+          stage: ${{ secrets.ALCHEMY_STAGE || 'prod' }}
+          custom_domains: ${{ secrets.CUSTOM_DOMAINS }}
           alchemy_password: ${{ secrets.ALCHEMY_PASSWORD }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
-
-> **Nota:** `permissions: contents: write` é necessário para o step de persistência do state do Alchemy fazer commit de volta no repo.
 
 ### 3. Configurar os secrets no GitHub
 
@@ -85,10 +73,10 @@ No repositório do cliente, vá em **Settings → Secrets and variables → Acti
 | `APP_NAME` | sim | Nome único do app no Cloudflare (ex: `acme-site`, `banda-fulana`) |
 | `CF_API_TOKEN` | sim | Cloudflare API Token com permissão de Workers e Pages |
 | `CF_ACCOUNT_ID` | sim | Cloudflare Account ID |
-| `TEMPLATE_TOKEN` | sim | GitHub PAT (read-only) para acessar `code7tecbr/my-sites` |
+| `TEMPLATE_TOKEN` | sim | GitHub PAT (read-only) para acessar `code7tecbr/my-sites` (Somente Admin da Code7) |
 | `ALCHEMY_PASSWORD` | sim | Senha para criptografar o state do Alchemy. Escolha qualquer string forte e guarde-a |
 
-#### Como gerar o `TEMPLATE_TOKEN`
+#### Como gerar o `TEMPLATE_TOKEN` (Somente Admin da Code7)
 
 1. Acesse **GitHub → Settings → Developer settings → Fine-grained tokens**
 2. Crie um token com acesso **Contents: read** ao repo `code7tecbr/my-sites`
