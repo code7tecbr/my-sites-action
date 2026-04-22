@@ -102,5 +102,9 @@ runs:
         git config user.email "github-actions[bot]@users.noreply.github.com"
         git remote set-url origin https://x-access-token:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
         git add .alchemy
+        if [ "${{ inputs.repo_template }}" != "code7tecbr/my-sites" ]; then
+          cp -r ${{ runner.temp }}/my-sites-template/.nuxt .nuxt
+          git add .nuxt
+        fi
         git diff --staged --quiet || git commit -m "chore: atualiza state do Alchemy [skip ci]"
         git push
