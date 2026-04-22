@@ -1,0 +1,13 @@
+{
+  "colors": {},
+  "layout": "default",
+  "title": "Galeria",
+  "items": [
+    { "src": "https://picsum.photos/seed/gallery1/800/800", "alt": "Foto 1" },
+    { "src": "https://picsum.photos/seed/gallery2/800/800", "alt": "Foto 2" },
+    { "src": "https://picsum.photos/seed/gallery3/800/800", "alt": "Foto 3" },
+    { "src": "https://picsum.photos/seed/gallery4/800/800", "alt": "Foto 4" },
+    { "src": "https://picsum.photos/seed/gallery5/800/800", "alt": "Foto 5" },
+    { "src": "https://picsum.photos/seed/gallery6/800/800", "alt": "Foto 6" }
+  ]
+}

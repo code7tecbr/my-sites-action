@@ -1,0 +1,12 @@
+{
+  "colors": {},
+  "layout": "default",
+  "iconLayout": "stacked",
+  "align": "center",
+  "title": "Nossa Missão",
+  "items": [
+    { "icon": "⭐", "title": "Excelência",    "description": "Entregamos o melhor em cada projeto, sem abrir mão da qualidade." },
+    { "icon": "⏰", "title": "Pontualidade",  "description": "Cumprimos prazos porque respeitamos o seu tempo." },
+    { "icon": "❤️", "title": "Humanismo",     "description": "Colocamos as pessoas no centro de tudo que fazemos." }
+  ]
+}

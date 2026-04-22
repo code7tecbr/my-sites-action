@@ -1,0 +1,13 @@
+{
+  "colors": {},
+  "layout": "default",
+  "title": "Sobre Nós",
+  "body": "Conte aqui a história da sua empresa, banda ou projeto. Quem são vocês, o que fazem, quais são os valores. Este texto é editável diretamente pelo painel admin.",
+  "image": "/about.jpg",
+  "imageAlt": "Foto da equipe",
+  "pillars": [
+    { "title": "Inovação",        "text": "Nascemos com o intuito de prover soluções personalizadas e inovadoras, aliando técnica e criatividade." },
+    { "title": "Excelência",      "text": "Entregamos o melhor em cada projeto, sem abrir mão da qualidade e do comprometimento com o cliente." },
+    { "title": "Profissionalismo","text": "Nossa equipe é competente e dedicada a atender prontamente todas as suas necessidades." }
+  ]
+}

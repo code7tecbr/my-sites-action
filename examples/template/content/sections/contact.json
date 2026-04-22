@@ -1,0 +1,13 @@
+{
+  "colors": {},
+  "layout": "default",
+  "title": "Contato",
+  "email": "contato@empresa.com",
+  "phone": "(11) 9 0000-0000",
+  "address": "Rua Exemplo, 123 — Cidade, Estado",
+  "social": {
+    "instagram": "",
+    "facebook": "",
+    "whatsapp": "11900000000"
+  }
+}

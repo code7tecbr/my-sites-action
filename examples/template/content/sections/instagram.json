@@ -1,0 +1,16 @@
+{
+  "colors": {},
+  "layout": "default",
+  "title": "Instagram",
+  "subtitle": "Nos siga nas redes",
+  "username": "@seu_usuario",
+  "profileUrl": "https://instagram.com/seu_usuario",
+  "items": [
+    { "url": "https://instagram.com/p/exemplo1", "image": "https://picsum.photos/seed/insta1/600/600", "alt": "Post 1" },
+    { "url": "https://instagram.com/p/exemplo2", "image": "https://picsum.photos/seed/insta2/600/600", "alt": "Post 2" },
+    { "url": "https://instagram.com/p/exemplo3", "image": "https://picsum.photos/seed/insta3/600/600", "alt": "Post 3" },
+    { "url": "https://instagram.com/p/exemplo4", "image": "https://picsum.photos/seed/insta4/600/600", "alt": "Post 4" },
+    { "url": "https://instagram.com/p/exemplo5", "image": "https://picsum.photos/seed/insta5/600/600", "alt": "Post 5" },
+    { "url": "https://instagram.com/p/exemplo6", "image": "https://picsum.photos/seed/insta6/600/600", "alt": "Post 6" }
+  ]
+}

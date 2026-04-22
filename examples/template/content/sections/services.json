@@ -1,0 +1,16 @@
+{
+  "colors": {},
+  "layout": "default",
+  "iconLayout": "inline",
+  "align": "left",
+  "title": "Nossos Serviços",
+  "subtitle": "O que podemos fazer por você",
+  "items": [
+    { "icon": "🏗️", "title": "Serviço 1", "description": "Descreva aqui o que este serviço oferece ao cliente.", "detailPage": "/item/servico-1", "cta": { "label": "Saiba mais", "href": "#" } },
+    { "icon": "⚡", "title": "Serviço 2", "description": "Descreva aqui o que este serviço oferece ao cliente." },
+    { "icon": "🎨", "title": "Serviço 3", "description": "Descreva aqui o que este serviço oferece ao cliente." },
+    { "icon": "🔧", "title": "Serviço 4", "description": "Descreva aqui o que este serviço oferece ao cliente." },
+    { "icon": "📋", "title": "Serviço 5", "description": "Descreva aqui o que este serviço oferece ao cliente." },
+    { "icon": "🤝", "title": "Serviço 6", "description": "Descreva aqui o que este serviço oferece ao cliente." }
+  ]
+}

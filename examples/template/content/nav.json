@@ -1,0 +1,11 @@
+{
+  "colors": {},
+  "links": [
+    { "label": "Início",   "href": "#hero" },
+    { "label": "Serviços", "href": "#services" },
+    { "label": "Sobre",    "href": "#about" },
+    { "label": "Missão",   "href": "#mission" },
+    { "label": "Galeria",  "href": "#gallery" },
+    { "label": "Contato",  "href": "#contact" }
+  ]
+}

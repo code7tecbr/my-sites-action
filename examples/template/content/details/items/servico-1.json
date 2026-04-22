@@ -1,0 +1,26 @@
+{
+  "colors": {
+    "background": "#0f172a",
+    "foreground": "#f8fafc",
+    "primary": "#6366f1",
+    "muted": "#94a3b8"
+  },
+  "title": "Serviço 1",
+  "description": "Descrição curta exibida no card da seção de serviços.",
+  "badge": "R$ 00,00",
+  "images": [
+    { "src": "https://picsum.photos/seed/item1a/800/600", "alt": "Serviço 1 — imagem 1" },
+    { "src": "https://picsum.photos/seed/item1b/800/600", "alt": "Serviço 1 — imagem 2" },
+    { "src": "https://picsum.photos/seed/item1c/800/600", "alt": "Serviço 1 — imagem 3" }
+  ],
+  "body": "Texto longo descrevendo o serviço, produto ou integrante em detalhes.",
+  "features": [
+    "Característica ou destaque 1",
+    "Característica ou destaque 2",
+    "Característica ou destaque 3"
+  ],
+  "cta": {
+    "label": "Entrar em contato",
+    "href": "#contact"
+  }
+}

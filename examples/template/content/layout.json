@@ -1,0 +1,12 @@
+{
+  "sections": [
+    { "id": "hero",     "component": "HeroSection",     "enabled": true },
+    { "id": "services", "component": "ServicesSection",  "enabled": true },
+    { "id": "about",    "component": "AboutSection",     "enabled": true },
+    { "id": "mission",  "component": "MissionSection",   "enabled": true },
+    { "id": "gallery",  "component": "GallerySection",   "enabled": true },
+    { "id": "contact",   "component": "ContactSection",   "enabled": true },
+    { "id": "reviews",   "component": "ReviewsSection",   "enabled": true },
+    { "id": "instagram", "component": "InstagramSection", "enabled": true }
+  ]
+}

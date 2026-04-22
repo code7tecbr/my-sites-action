@@ -1,0 +1,14 @@
+{
+  "name": "Nome da Empresa",
+  "tagline": "O slogan da sua empresa aqui",
+  "logo": "/logo.png",
+  "logoHeight": 40,
+  "favicon": "/favicon.ico",
+  "fontFamily": "",
+  "primaryColor": "#7c3aed",
+  "accentColor": "#ea580c",
+  "foregroundColor": "#ffffff",
+  "backgroundColor": "#0f0f0f",
+  "secondaryBackground": "#1a1a1a",
+  "mutedColor": "#9ca3af"
+}

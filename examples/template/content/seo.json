@@ -1,0 +1,7 @@
+{
+  "title": "Nome da Empresa",
+  "description": "Descrição da empresa para mecanismos de busca. Seja claro e objetivo.",
+  "ogImage": "/og-image.jpg",
+  "twitterCard": "summary_large_image",
+  "siteUrl": "https://seusite.com.br"
+}

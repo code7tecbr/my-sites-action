@@ -1,0 +1,28 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: code7tecbr/my-sites-action@v1.1
+        with:
+          app_name: ${{ secrets.APP_NAME }}
+          cf_api_token: ${{ secrets.CF_API_TOKEN }}
+          cf_account_id: ${{ secrets.CF_ACCOUNT_ID }}
+          template_token: ${{ secrets.TEMPLATE_TOKEN }}
+          stage: ${{ secrets.STAGE || 'prod' }}
+          custom_domains: ${{ secrets.CUSTOM_DOMAINS }}
+          alchemy_password: ${{ secrets.ALCHEMY_PASSWORD }}

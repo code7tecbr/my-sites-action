@@ -1,0 +1,29 @@
+{
+  "colors": {},
+  "layout": "default",
+  "title": "O que dizem sobre nós",
+  "subtitle": "Avaliações",
+  "items": [
+    {
+      "name": "Ana Silva",
+      "role": "Cliente",
+      "avatar": "",
+      "rating": 5,
+      "text": "Excelente atendimento! Superou todas as minhas expectativas. Recomendo muito."
+    },
+    {
+      "name": "Carlos Souza",
+      "role": "Cliente",
+      "avatar": "",
+      "rating": 5,
+      "text": "Profissionalismo e qualidade em cada detalhe. Com certeza voltarei a contratar."
+    },
+    {
+      "name": "Mariana Costa",
+      "role": "Cliente",
+      "avatar": "",
+      "rating": 5,
+      "text": "Atendimento rápido, resultado impecável. Equipe muito dedicada e atenciosa."
+    }
+  ]
+}

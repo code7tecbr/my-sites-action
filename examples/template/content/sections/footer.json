@@ -1,0 +1,25 @@
+{
+  "enabled": true,
+  "colors": {
+    "background": "#111111",
+    "foreground": "#ffffff",
+    "muted": "#9ca3af"
+  },
+  "slogan": "Sua empresa com excelência e inovação.",
+  "address": "Rua Exemplo, 123 — Cidade, Estado",
+  "phones": ["(11) 9 0000-0000"],
+  "email": "contato@empresa.com",
+  "quickLinks": [
+    { "label": "Início",    "href": "#hero" },
+    { "label": "Serviços",  "href": "#services" },
+    { "label": "Sobre",     "href": "#about" },
+    { "label": "Missão",    "href": "#mission" },
+    { "label": "Contato",   "href": "#contact" }
+  ],
+  "social": {
+    "instagram": "",
+    "facebook": "",
+    "whatsapp": ""
+  },
+  "copyright": "© 2025 Empresa. Todos os direitos reservados."
+}
